@@ -12,16 +12,16 @@ Vision Statement:
 Motivation:
 
 Risks:
--Unsure of the difficulty level in regards to Chrome built-in extensions and handling API
--Unknown language for some members: Javascript
--Introduction to learning D3JS, a data visualization tool which only two members have experience in  
+-Unsure of the difficulty level in regards to Chrome built-in extensions and handling API<br>
+-Unknown language for some members: Javascript<br>
+-Introduction to learning D3JS, a data visualization tool which only two members have experience in<br>
 
 Mitigation strategy for dealing with the risks: 
 
-User stories:
--People looking at time management
--Researchers collecting data
+User stories:<br>
+-People looking at time management<br>
+-Researchers collecting data<br>
 
-Methodology: Agile 
+Methodology: Agile <br>
 
 Project Tracking software: Trello
