@@ -6,7 +6,7 @@ Who: <br>
  -Julia Heil: jheil<br>
  -Ryan Burt: burt1215 <br>
  -Matilda Whitemore: matilda-may<br>
- -Austin Baysinger: a-baysinger<br>
+ -Austin Baysinger: a-baysinger<br><br>
 Title:
 
 Description:
