@@ -29,3 +29,5 @@ User stories:<br>
 Methodology: Agile <br>
 
 Project Tracking software: Trello
+
+![alt tag](http://imgur.com/Sxa1cJo)
