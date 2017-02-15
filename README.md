@@ -30,4 +30,4 @@ Methodology: Agile <br>
 
 Project Tracking software: Trello
 
-![alt tag](http://imgur.com/Sxa1cJo)
+[Imgur](http://i.imgur.com/Sxa1cJo.png)
