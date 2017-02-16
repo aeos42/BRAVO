@@ -22,6 +22,7 @@ ___
 * In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 * Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
 * There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
+
 ___
 <h3>Risks:</h3>
 * Unsure of the difficulty level in regards to Chrome built-in extensions and handling API.
