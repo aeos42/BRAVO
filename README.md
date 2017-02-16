@@ -31,6 +31,7 @@ ___
 
 Mitigation strategy for dealing with the risks:<br>
 * Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
+
 ___
 <h3>User stories:</h3>
 <h6>Agile scale used: Powers of 2 from 0 to 64</h6>
@@ -57,11 +58,12 @@ Agile size: 16
 As a user, I want time management goals created from my data so that I can use my time more effectively.
 Agile size: 64
 
+___
 <h3>Methodology:</h3>
 *Agile*
-
+___
 <h3>Project Tracking software:</h3>
 *Trello*
-
+____
 <h3>Project Plan:</h3>
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
