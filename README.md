@@ -63,7 +63,7 @@ Agile size: 64
 * *Agile*
 
 <h3>Project Tracking software:</h3>
-* *Trello*
+.. *Trello*
 
 <h3>Project Plan:</h3>
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
