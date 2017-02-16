@@ -10,7 +10,7 @@
 |Austin Baysinger |a-baysinger     |
 
 <h4>Title:</h4>
-BRAVO - BRowser Analytics VisualizatiOn
+*BRAVO - BRowser Analytics VisualizatiOn*
 
 Description: 
 
