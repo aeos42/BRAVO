@@ -39,7 +39,7 @@ ___
 
 * __*ID: 001*__<br>
 As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity.<br> 
-<h6>Agile size: 8</h6>
+*Agile size: 8*
 
 
 * __*ID: 002*__<br>
