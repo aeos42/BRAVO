@@ -1,6 +1,5 @@
 # HistoryViz
 <h2>A chrome extension that visualizes your browser history data.</h2>
----
 <h3>Who:</h3>
 |Name             |GitHub Usernames|
 |:-----------------:|:----------------:|
@@ -9,24 +8,23 @@
 |Ryan Burt        |burt1215        |
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
-
+---
 <h3>Title:</h3>
 _**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
-
+---
 <h3>Description:</h3>
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
-
+---
 <h3>Vision Statement:</h3> 
 See what happened with your internet day.
-
+---
 <h3>Motivation:</h3>
 In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 
 Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
 
 There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
-
-
+---
 <h3>Risks:</h3>
 * Unsure of the difficulty level in regards to Chrome built-in extensions and handling API.
 * Unknown language for some members: Javascript.
