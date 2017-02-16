@@ -15,12 +15,10 @@ _**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
 <h4>Description:</h4>
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
 
-Vision Statement:
- 
+<h4>Vision Statement:</h4> 
 See what happened with your internet day.
 
-Motivation:
-
+<h4>Motivation:</h4>
 In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 
 Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
@@ -28,7 +26,7 @@ Much like Mint produces useful metrics and graphics for a person’s money usage
 There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
 
 
-Risks:<br>
+<h4>Risks:</h4>
 -Unsure of the difficulty level in regards to Chrome built-in extensions and handling API<br>
 -Unknown language for some members: Javascript<br>
 -Introduction to learning D3.js, a data visualization tool which only two members have experience in<br>
