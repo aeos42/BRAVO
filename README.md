@@ -1,6 +1,6 @@
 # HistoryViz
-<h3>A chrome extension that visualizes your browser history data.</h3>
-<h4>Who:</h4>
+<h2>A chrome extension that visualizes your browser history data.</h3>
+<h3>Who:</h3>
 |Name             |GitHub Usernames|
 |:-----------------:|:----------------:|
 |Adam Siefkas     |aeos42          |
@@ -9,16 +9,16 @@
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
 
-<h4>Title:</h4>
+<h3>Title:</h3>
 _**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
 
-<h4>Description:</h4>
+<h3>Description:</h3>
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
 
-<h4>Vision Statement:</h4> 
+<h3>Vision Statement:</h3> 
 See what happened with your internet day.
 
-<h4>Motivation:</h4>
+<h3>Motivation:</h3>
 In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 
 Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
@@ -26,7 +26,7 @@ Much like Mint produces useful metrics and graphics for a person’s money usage
 There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
 
 
-<h4>Risks:</h4>
+<h3>Risks:</h3>
 * Unsure of the difficulty level in regards to Chrome built-in extensions and handling API.
 * Unknown language for some members: Javascript.
 * Introduction to learning D3.js, a data visualization tool which only two members have experience in.
@@ -34,7 +34,7 @@ There are also many interesting social understandings that can be pulled from br
 Mitigation strategy for dealing with the risks: 
 Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
 
-<h4>User stories:</h4>
+<h3>User stories:</h3>
 <h6>*Agile scale used: Powers of 2 from 0 to 64*</h6>
 
 * *ID: 001*<br>
@@ -59,11 +59,11 @@ Agile size: 16
 As a user, I want time management goals created from my data so that I can use my time more effectively.
 Agile size: 64
 
-Methodology: Agile <br>
+<h3>Methodology:</h3>
+* *Agile*
 
-Project Tracking software: Trello
+<h3>Project Tracking software:</h3>
+* *Trello*
 
-Project Plan:
-
-
+<h3>Project Plan:</h3>
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
