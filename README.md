@@ -30,13 +30,15 @@ ___
 * Introduction to learning D3.js, a data visualization tool which only two members have experience in.
 
 Mitigation strategy for dealing with the risks:<br>
-* Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
+* Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. 
+* The sooner we get that done, the easier it will be to apply more complex changes.  
 
 ___
 <h3>User stories:</h3>
 <h6>Agile scale used: Powers of 2 from 0 to 64</h6>
 
 * __*ID: 001*__
+
   ⋅⋅⋅As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. 
   Agile size: 8
 * __*ID: 002*__<br>
