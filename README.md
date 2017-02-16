@@ -3,7 +3,7 @@
 <h3>A chrome extension that visualizes your browser history data.</h3>
 
 Who: <br>
-Name|GitHub Usernames
+Name|GitHub Usernames<br>
 ----|----
 Adam Siefkas|aeos42<br>
 Julia Heil|jheil<br>
