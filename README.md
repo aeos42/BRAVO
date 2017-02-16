@@ -8,7 +8,7 @@
 |Ryan Burt        |burt1215        |
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
-___
+
 <h3>Title:</h3>
 _**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
 ___
