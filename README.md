@@ -1,5 +1,6 @@
 # HistoryViz
 <h2>A chrome extension that visualizes your browser history data.</h3>
+---
 <h3>Who:</h3>
 |Name             |GitHub Usernames|
 |:-----------------:|:----------------:|
