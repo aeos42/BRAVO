@@ -37,7 +37,7 @@ Create a functioning skeleton that can produce a simple visualization, even if i
 <h3>User stories:</h3>
 <h6>*Agile scale used: Powers of 2 from 0 to 64*</h6>
 
-* *ID: 001*<br>
+* <h4>*ID: 001*</h4><br>
 As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. Agile size: 8
 * *ID: 002*<br>
 As a user, I want to interact with my browser visualizations so that I can gain insight about particular elements of the visualization.
@@ -60,10 +60,10 @@ As a user, I want time management goals created from my data so that I can use m
 Agile size: 64
 
 <h3>Methodology:</h3>
-* *Agile*
+*Agile*
 
 <h3>Project Tracking software:</h3>
-⋅⋅*Trello*
+*Trello*
 
 <h3>Project Plan:</h3>
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
