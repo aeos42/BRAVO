@@ -38,6 +38,7 @@ ___
 
 * __*ID: 001*__<br>
 As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. 
+
 Agile size: 8
 * __*ID: 002*__<br>
 As a user, I want to interact with my browser visualizations so that I can gain insight about particular elements of the visualization.
