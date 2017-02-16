@@ -1,12 +1,12 @@
 # HistoryViz 
-
-A chrome extension that visualizes your browser history data.
-
-Who:
 Markdown | Less | Pretty
 --- | --- | ---
 *Still* | `renders` | **nicely**
 1 | 2 | 3
+A chrome extension that visualizes your browser history data.
+
+Who:
+
 |Name             |GitHub Usernames|<br>
 |-----------------|----------------|<br>
 |Adam Siefkas     |aeos42          |<br>
