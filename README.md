@@ -37,15 +37,15 @@ Create a functioning skeleton that can produce a simple visualization, even if i
 <h4>User stories:</h4>
 Agile scale used: Powers of 2 from 0 to 64
 
-*ID: 001*
+*ID: 001*<br>
 As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. 
 Agile size: 8
 
-*ID: 002*
+*ID: 002*<br>
 As a user, I want to interact with my browser visualizations so that I can gain insight about particular elements of the visualization.
 Agile size: 32
 
-*ID: 003*
+*ID: 003*<br>
 As a user, I want to make sure that my browsing data is secure, so that my private information is not viewable.
 Agile size: 16
 
