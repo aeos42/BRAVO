@@ -1,4 +1,5 @@
-# HistoryViz 
+# HistoryViz
+A chrome extension that visualizes your browser history data.
 |Name             |GitHub Usernames|
 |-----------------|----------------|
 |Adam Siefkas     |aeos42          |
@@ -6,7 +7,7 @@
 |Ryan Burt        |burt1215        |
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
-A chrome extension that visualizes your browser history data.
+
 
 Who:
 
