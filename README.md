@@ -10,10 +10,9 @@
 |Austin Baysinger |a-baysinger     |
 
 <h4>Title:</h4>
-*BRAVO - BRowser Analytics VisualizatiOn*
+*BRAVO - __BR__owser __A__nalytics __V__isualizati__O__n*
 
-Description: 
-
+<h4>Description:</h4>
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
 
 Vision Statement:
