@@ -1,6 +1,6 @@
 # HistoryViz 
 
-<h3>A chrome extension that visualizes your browser history data.</h3>
+A chrome extension that visualizes your browser history data.
 
 Who: <br>
 Markdown | Less | Pretty
