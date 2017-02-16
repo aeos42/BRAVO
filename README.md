@@ -3,13 +3,13 @@
 <h3>A chrome extension that visualizes your browser history data.</h3>
 
 Who: <br>
-|Name             |GitHub Usernames|<br>
+|Name             |GitHub Usernames|
 |-----------------|----------------|
-|Adam Siefkas     |aeos42          |<br>
-|Julia Heil       |jheil           |<br>
-|Ryan Burt        |burt1215        | <br>
-|Matilda Whitemore|matilda-may     |<br>
-|Austin Baysinger |a-baysinger     |<br><br>
+|Adam Siefkas     |aeos42          |
+|Julia Heil       |jheil           |
+|Ryan Burt        |burt1215        |
+|Matilda Whitemore|matilda-may     |
+|Austin Baysinger |a-baysinger     |
 
 Title:
 BRAVO - BRowser Analytics VisualizatiOn
