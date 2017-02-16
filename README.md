@@ -27,9 +27,9 @@ There are also many interesting social understandings that can be pulled from br
 
 
 <h4>Risks:</h4>
-..*Unsure of the difficulty level in regards to Chrome built-in extensions and handling API<br>
-..*Unknown language for some members: Javascript<br>
-..*Introduction to learning D3.js, a data visualization tool which only two members have experience in<br>
+* Unsure of the difficulty level in regards to Chrome built-in extensions and handling API
+* Unknown language for some members: Javascript<
+* Introduction to learning D3.js, a data visualization tool which only two members have experience in
 
 Mitigation strategy for dealing with the risks: Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
 
