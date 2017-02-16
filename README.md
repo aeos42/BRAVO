@@ -1,6 +1,6 @@
 # HistoryViz
 <h3>A chrome extension that visualizes your browser history data.</h3>
-<h5>Who:</h5>
+<h4>Who:</h4>
 |Name             |GitHub Usernames|
 |:-----------------:|:----------------:|
 |Adam Siefkas     |aeos42          |
@@ -9,12 +9,7 @@
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
 
-
-
-
-
-
-Title:
+<h4>Title:</h4>
 BRAVO - BRowser Analytics VisualizatiOn
 
 Description: 
