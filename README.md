@@ -16,7 +16,7 @@ ___
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
 ___
 <h3>Vision Statement:</h3> 
-See what happened with your internet day.
+*Gain insights into your browsing habits.*
 ___
 <h3>Motivation:</h3>
 * In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
