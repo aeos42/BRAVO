@@ -2,7 +2,7 @@
 
 A chrome extension that visualizes your browser history data.
 
-Who: <br>
+Who:
 Markdown | Less | Pretty
 --- | --- | ---
 *Still* | `renders` | **nicely**
