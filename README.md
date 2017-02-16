@@ -1,19 +1,16 @@
 # HistoryViz 
-Markdown | Less | Pretty
---- | --- | ---
-*Still* | `renders` | **nicely**
-1 | 2 | 3
+|Name             |GitHub Usernames|
+|-----------------|----------------|
+|Adam Siefkas     |aeos42          |
+|Julia Heil       |jheil           |
+|Ryan Burt        |burt1215        |
+|Matilda Whitemore|matilda-may     |
+|Austin Baysinger |a-baysinger     |
 A chrome extension that visualizes your browser history data.
 
 Who:
 
-|Name             |GitHub Usernames|<br>
-|-----------------|----------------|<br>
-|Adam Siefkas     |aeos42          |<br>
-|Julia Heil       |jheil           |<br>
-|Ryan Burt        |burt1215        |<br>
-|Matilda Whitemore|matilda-may     |<br>
-|Austin Baysinger |a-baysinger     |<br>
+
 
 Title:
 BRAVO - BRowser Analytics VisualizatiOn
