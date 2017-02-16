@@ -8,16 +8,16 @@
 |Ryan Burt        |burt1215        |
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
-<br>
+
 <h3>Title:</h3>
 _**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
-<br>
+
 <h3>Description:</h3>
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
-<br>
+
 <h3>Vision Statement:</h3> 
 See what happened with your internet day.
-<br><br>
+
 <h3>Motivation:</h3>
 In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 
@@ -25,7 +25,7 @@ Much like Mint produces useful metrics and graphics for a person’s money usage
 
 There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
 
-<br><br>
+
 <h3>Risks:</h3>
 * Unsure of the difficulty level in regards to Chrome built-in extensions and handling API.
 * Unknown language for some members: Javascript.
@@ -33,7 +33,7 @@ There are also many interesting social understandings that can be pulled from br
 
 Mitigation strategy for dealing with the risks:<br>
 * Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
-<br><br>
+
 <h3>User stories:</h3>
 <h6>Agile scale used: Powers of 2 from 0 to 64</h6>
 
@@ -61,9 +61,9 @@ Agile size: 64
 
 <h3>Methodology:</h3>
 *Agile*
-<br><br>
+
 <h3>Project Tracking software:</h3>
 *Trello*
-<br><br>
+
 <h3>Project Plan:</h3>
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
