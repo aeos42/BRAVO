@@ -1,8 +1,8 @@
 # HistoryViz 
 
-<h1>A chrome extension that visualizes your browser history data.</h1>
+<h3>A chrome extension that visualizes your browser history data.</h3>
 
-Who: <br>
+<h6>Who:</h6> <br>
  -Adam Siefkas: aeos42<br>
  -Julia Heil: jheil<br>
  -Ryan Burt: burt1215 <br>
