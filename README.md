@@ -1,8 +1,8 @@
 # HistoryViz
 <h3>A chrome extension that visualizes your browser history data.</h3>
-<h6>Who:</h6>
+<h5>Who:</h5>
 |Name             |GitHub Usernames|
-|-----------------|----------------|
+|:-----------------:|:----------------:|
 |Adam Siefkas     |aeos42          |
 |Julia Heil       |jheil           |
 |Ryan Burt        |burt1215        |
