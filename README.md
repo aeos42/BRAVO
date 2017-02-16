@@ -66,4 +66,4 @@ Project Tracking software: Trello
 Project Plan:
 
 
-[Imgur](http://i.imgur.com/Sxa1cJo.png)
+![Imgur](http://i.imgur.com/Sxa1cJo.png)
