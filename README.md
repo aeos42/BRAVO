@@ -35,9 +35,8 @@ Mitigation strategy for dealing with the risks:
 Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. The sooner we get that done, the easier it will be to apply more complex changes.  
 
 <h4>User stories:</h4>
-*Agile scale used: Powers of 2 from 0 to 64*
-2. Another item
-⋅⋅* Unordered sub-list. 
+⋅⋅*Agile scale used: Powers of 2 from 0 to 64*
+
 * ID: 001
 ⋅⋅As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. Agile size: 8
 
