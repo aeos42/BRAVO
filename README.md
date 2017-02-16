@@ -1,5 +1,5 @@
 # HistoryViz
-A chrome extension that visualizes your browser history data.
+# A chrome extension that visualizes your browser history data.
 |Name             |GitHub Usernames|
 |-----------------|----------------|
 |Adam Siefkas     |aeos42          |
