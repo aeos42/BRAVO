@@ -37,13 +37,15 @@ ___
 <h3>User stories:</h3>
 <h6>Agile scale used: Powers of 2 from 0 to 64</h6>
 
-* __*ID: 001*__
+* __*ID: 001*__<br>
+As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity.<br> 
+Agile size: 8
 
-	As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity. 
-  Agile size: 8
+
 * __*ID: 002*__<br>
-As a user, I want to interact with my browser visualizations so that I can gain insight about particular elements of the visualization.
-Agile size: 32
+As a user, I want to interact with my browser visualizations so that I can gain insight about particular elements of the visualization.<br>
+Agile size: 32<br>
+
 
 * __*ID: 003*__<br>
 As a user, I want to make sure that my browsing data is secure, so that my private information is not viewable.
