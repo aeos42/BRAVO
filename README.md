@@ -29,7 +29,7 @@ ___
 * Unknown language for some members: Javascript.
 * Introduction to learning D3.js, a data visualization tool which only two members have experience in.
 
-Mitigation strategy for dealing with the risks:<br>
+<h3>Mitigation strategy for dealing with the risks:</h3>
 * Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. 
 * The sooner we get that done, the easier it will be to apply more complex changes.  
 
