@@ -165,6 +165,18 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
     data["ends"].push({"dataId":dataId,"tabId":tabId,"endTime":Date()});
 });
 
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.greeting == "pieChartData") {
+            var response = pieChartData();
+            sendResponse(response);
+        }
+        if (request.greeting == "barChartData") {
+            var response = barChartData();
+            sendResponse(response);
+        } 
+  });
+  
 function showWebsites() {
     var i;
     for (i = 0; i < data.url.length; i++) {
@@ -234,4 +246,121 @@ function showTime(dataId) {
     }
 
     console.log("You spent " + activeTime/1000 +" seconds on " + urlName);
+}
+
+function pieChartData() {
+/*
+ *  This function will be called by piechart.js
+ *  It will return a JSON object that will be used
+ *  by the piechart to show website names and the
+ *  time spent on that website.
+ */
+
+    var returnJSON = {"objects":[]};
+    var j;
+    var dataId;
+    var urlName;
+    var startTime;
+    var endTime;
+    var activeTime;
+    var tempStart;
+    for (j = 0; j < data.url.length; j++) {
+        if (data.url[j].urlName.slice(0,6) !== "chrome") {
+            dataId = data.url[j].dataId;
+            urlName = data.url[j].urlName;
+            urlName = urlName.slice(urlName.indexOf("//") + 2);
+            
+            if (urlName.indexOf("/") !== -1) {
+                urlName = urlName.slice(0, urlName.indexOf("/"));
+            }
+            // Now that we have the URL name, we need to determine the time spent
+            dataMap = data.starts.map(function(d) { return d['dataId']; });
+            dataIndex = dataMap.indexOf(dataId);
+            startTime = data.starts[dataIndex].startTime;
+
+            dataMap = data.ends.map(function(d) { return d['dataId']; });
+            dataIndex = dataMap.indexOf(dataId);
+
+            if (dataIndex === -1) {
+                endTime = Date();
+            }
+            else {
+                endTime = data.ends[dataIndex].endTime;
+            }
+
+            dataMap = data.url.map(function(d) { return d['dataId']; });
+            dataIndex = dataMap.lastIndexOf(dataId);
+
+            tempStart = startTime;
+            var i = 0;
+            while (i < data.activeChanged.length && Date.parse(tempStart) >= Date.parse(data.activeChanged[i].changeTime)) {
+                i++;
+            }
+            if (i === data.activeChanged.length && Date.parse(tempStart) >= Date.parse(data.activeChanged[i - 1].changeTime)) {
+                activeTime = Date.parse(endTime) - Date.parse(tempStart);
+            }
+            else {
+                activeTime = Date.parse(data.activeChanged[i].changeTime) - Date.parse(tempStart);
+                while (i < data.activeChanged.length - 1) {
+                    if (data.activeChanged[i].dataId === dataId) {
+                        tempStart = data.activeChanged[i].changeTime;
+                        activeTime += Date.parse(data.activeChanged[i + 1].changeTime) - Date.parse(tempStart);
+                    }
+                    i++;
+                }
+                if (data.activeChanged[i].dataId === dataId) {
+                    activeTime += Date.parse(endTime) - Date.parse(data.activeChanged[i].changeTime);
+                }
+            }
+            activeTime = activeTime/1000;
+            dataMap = returnJSON.objects.map(function(d) { return d['title']; });
+            dataIndex = dataMap.lastIndexOf(urlName);
+            
+            if (dataIndex === -1) {
+                returnJSON["objects"].push({"title":urlName,"time":activeTime});
+            }
+            else {
+                returnJSON.objects[dataIndex].time += activeTime;
+            }
+            
+        }
+    }
+    return returnJSON;
+}
+
+function barChartData() {
+ /*
+ *  This function will be called by barchart.js
+ *  It will return a JSON object that will be used
+ *  by the barchart to show website names and the
+ *  number of visits for that website.
+ */
+
+    var returnJSON = {"objects":[]};
+    var j;
+    var dataId;
+    var urlName;
+
+    for (j = 0; j < data.url.length; j++) {
+        if (data.url[j].urlName.slice(0,6) !== "chrome") {
+            dataId = data.url[j].dataId;
+            urlName = data.url[j].urlName;
+            urlName = urlName.slice(urlName.indexOf("//") + 2);
+            
+            if (urlName.indexOf("/") !== -1) {
+                urlName = urlName.slice(0, urlName.indexOf("/"));
+            }
+        
+            dataMap = returnJSON.objects.map(function(d) { return d['Domain']; });
+            dataIndex = dataMap.lastIndexOf(urlName);
+
+            if (dataIndex === -1) {
+                returnJSON["objects"].push({"Domain":urlName,"Visits":1});
+            }
+            else {
+                returnJSON.objects[dataIndex].Visits ++;
+            }
+        }
+    }
+    return returnJSON;
 }

@@ -1,12 +1,7 @@
-var dataset = [
-          {"Domain": "Facebook", "Visits": 600},
-          {"Domain": "Netflix", "Visits": 422},
-          {"Domain": "Google", "Visits": 300},
-          {"Domain": "Colorado", "Visits": 1200},
-          {"Domain": "YouTube", "Visits": 700},
-          {"Domain": "Slack", "Visits": 200},
-          {"Domain": "Git", "Visits": 50}
-        ]
+
+chrome.runtime.sendMessage({greeting: "barChartData"}, function(response) {
+var dataset = response.objects;
+console.log(dataset);
 
         // Dimensions for the chart: height, width, and space b/t the bars
         var margins = {top: 30, right: 50, bottom: 30, left: 50}
@@ -108,4 +103,4 @@ var dataset = [
         chart.append('text')
           .text('Visits Totals')
           .attr('transform', 'translate(-70, -20)');
-
+});
