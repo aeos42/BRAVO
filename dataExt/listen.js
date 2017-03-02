@@ -3,7 +3,7 @@ var data = {"tabs":[],"activeChanged":[],"starts":[],"ends":[],"url":[]};
  *                                       data
  *      tabs      |   activeChanged |   starts      |   ends        |   url
  *      ------------------------------------------------------------------------
- *      dataId  <-|-> dataId      <-|-> dataId    <-|-> dataId    <-|-> dataId    
+ *      dataId  <-|-> dataId      <-|-> dataId    <-|-> dataId    <-|-> dataId
  *      tabId   <-|-> tabId       <-|-> tabId     <-|-> tabId     <-|-> tabId
  *                |   changeTime    |   startTime   |   endTime     |   urlName
  */
@@ -23,12 +23,13 @@ chrome.tabs.onCreated.addListener(function(createdTab) {
 
     // If tabs is empty the dataId will be 1
     if (data["tabs"].length === 0) {
-        dataId = 1; 
+        dataId = 1;
     }
     // Otherwise the dataId will be one more than the last dataId
     else {
         dataId = data.tabs[data["tabs"].length - 1].dataId + 1;
     }
+    //push the various data attributes of the tab into data
     data["tabs"].push({"dataId":dataId,"tabId":createdTab.id});
     data["starts"].push({"dataId":dataId,"tabId":createdTab.id,"startTime":Date()});
     data["url"].push({"dataId":dataId,"tabId":createdTab.id,"urlName":"chrome://newtab/"});
@@ -41,7 +42,9 @@ chrome.tabs.onActivated.addListener(function(info) {
  *  a new entry to the activeChanged object.
  *  We also need to check to make sure there is a data
  *  entry for the tab already.
+ *
  */
+
     dataMap = data.tabs.map(function(d) { return d['tabId']; });
     dataIndex = dataMap.lastIndexOf(info.tabId);
 /*
@@ -53,11 +56,11 @@ chrome.tabs.onActivated.addListener(function(info) {
  *  Reason Two:
  *      The tab was open before data started recording
  *  This checks to see if there is a data entry yet for the active tab
- *  If one is not there, it adds it  
+ *  If one is not there, it adds it
  */
     if (dataIndex === -1) {
         if (data["tabs"].length === 0) {
-            dataId = 1; 
+            dataId = 1;
         }
         else {
             dataId = data.tabs[data["tabs"].length - 1].dataId + 1;
@@ -79,7 +82,7 @@ chrome.tabs.onActivated.addListener(function(info) {
         });
         dataIndex = data["tabs"].length - 1;
     }
-    
+
     dataId = data.tabs[dataIndex].dataId;
     data["activeChanged"].push({"dataId":dataId,"tabId":info.tabId,"changeTime":Date()});
 });
@@ -87,7 +90,7 @@ chrome.tabs.onActivated.addListener(function(info) {
 // Triggers when the url of a tab is changed
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 /*
- *  When the url of a tab is changed we need to add 
+ *  When the url of a tab is changed we need to add
  *  new entries for the following objects
  *      tabs
  *      starts
@@ -99,9 +102,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
      *  Two things can happen here
      *      One: When the url was updated, a new tabId was created
      *      Two: The updated url has the same tabId as before
-     *  For instance one, a new entry has already been added for 
+     *  For instance one, a new entry has already been added for
      *  the tab object; the dataId for the last tab will be the one
-     *  right before this tab; the dataId for this tab will be 
+     *  right before this tab; the dataId for this tab will be
      *  the current dataId.
      *  For instance two, a new entry for the tab object needs to be
      *  added; the dataId for the last tab will be the last dataId;
@@ -110,12 +113,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
         // First we find the dataId
         dataMap = data.tabs.map(function(d) { return d['tabId']; });
         dataIndex = dataMap.lastIndexOf(tabId);
-        
+
         dataId = data.tabs[dataIndex].dataId;
-        
+
         dataMap = data.starts.map(function(d) { return d['dataId']; });
         dataIndex = dataMap.lastIndexOf(dataId);
-        
+
     /*
      *  Checks to see if the dataIndex exists.
      *  If it does, then the table already exists
@@ -153,12 +156,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 // Triggers when a tab is closed
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 /*
- *  When a tab is closed we need to add 
+ *  When a tab is closed we need to add
  *  an entry to the ends object.
  */
     dataMap = data.activeChanged.map(function(d) { return d['dataId']; });
-    dataId = dataMap[data.activeChanged.length - 1];    
-    
+    dataId = dataMap[data.activeChanged.length - 1];
+
     data["ends"].push({"dataId":dataId,"tabId":tabId,"endTime":Date()});
 });
 
@@ -177,7 +180,7 @@ function showTimes() {
         if (data.url[i].urlName !== "chrome://newtab/") {
             showTime(data.url[i].dataId);
         }
-    }    
+    }
 }
 
 function showTime(dataId) {
@@ -186,28 +189,28 @@ function showTime(dataId) {
     var activeTime;
     var tempStart;
     var urlName;
-    
+
     dataMap = data.url.map(function(d) { return d['dataId']; });
     dataIndex = dataMap.indexOf(dataId);
     urlName = data.url[dataIndex].urlName;
-    
+
     dataMap = data.starts.map(function(d) { return d['dataId']; });
     dataIndex = dataMap.indexOf(dataId);
     startTime = data.starts[dataIndex].startTime;
-    
+
     dataMap = data.ends.map(function(d) { return d['dataId']; });
     dataIndex = dataMap.indexOf(dataId);
-    
+
     if (dataIndex === -1) {
         endTime = Date();
     }
     else {
         endTime = data.ends[dataIndex].endTime;
     }
-    
+
     dataMap = data.url.map(function(d) { return d['dataId']; });
     dataIndex = dataMap.lastIndexOf(dataId);
-    
+
     tempStart = startTime;
     var i = 0;
     while (i < data.activeChanged.length && Date.parse(tempStart) >= Date.parse(data.activeChanged[i].changeTime)) {
@@ -229,6 +232,6 @@ function showTime(dataId) {
             activeTime += Date.parse(endTime) - Date.parse(data.activeChanged[i].changeTime);
         }
     }
-  
+
     console.log("You spent " + activeTime/1000 +" seconds on " + urlName);
 }
