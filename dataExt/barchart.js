@@ -1,6 +1,6 @@
 
 chrome.runtime.sendMessage({greeting: "barChartData"}, function(response) {
-var dataset = response.objects;
+var dataset = response.website;
 console.log(dataset);
 
         // Dimensions for the chart: height, width, and space b/t the bars

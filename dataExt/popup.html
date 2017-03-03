@@ -4,23 +4,43 @@
 
     <title>BRAVO - Browser Analytics Visualization</title>
     <style>
-		body {
-			min-width: 160px;
-			min-height: 200px;
-			background:#ffffff;
-		}
+        body {
+                min-width: 160px;
+                min-height: 200px;
+                background:#ffffff;
+        }
+        
+        button {
+            background-color: #66CCFF;
+            color: black;
+            border-radius: 10px;
+            border: .5px solid black;
+            box-shadow: 2px 2px 5px black;
+            outline: none;
+            padding: 3pt;
+            width: 100pt;
+        }
+
+        button:hover, button:focus {
+            background-color: #003399;
+            color: white; 
+        }
+
+        button:active {
+            box-shadow: 0 0 0 black;
+        }
     </style>
 
     <script src="viz.js"></script>
   </head> 
   <body>
-	<center><h3>Browser Analytics Visualization</h3>
+	<center><h2>Browser Analytics Visualization</h2>
   
-    <button id="viz1" style="background-color:#bfdb83">Visualization 1</button></br></br>
-    <button id="viz2" style="background-color:#bfdb83">Visualization 2</button></br></br>
-    <button id="viz3" style="background-color:#bfdb83">Visualization 3</button></br></br>
-    <button id="viz4" style="background-color:#bfdb83">Visualization 4</button></br></br>
-    <button id="viz5" style="background-color:#bfdb83">Visualization 5</button></br></br>
+    <button id="viz1">Visualization 1</button></br></br>
+    <button id="viz2">Visualization 2</button></br></br>
+    <button id="viz3">Visualization 3</button></br></br>
+    <button id="viz4">Visualization 4</button></br></br>
+    <button id="viz5">Visualization 5</button></br></br>
 	</center>
   </body>
 </html>
