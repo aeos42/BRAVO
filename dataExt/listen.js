@@ -170,10 +170,6 @@ chrome.runtime.onMessage.addListener(
         if (request.greeting == "pieChartData") {
             var response = pieChartData();
             sendResponse(response);
-        }
-        if (request.greeting == "barChartData") {
-            var response = barChartData();
-            sendResponse(response);
         } 
   });
   
@@ -328,39 +324,4 @@ function pieChartData() {
     return returnJSON;
 }
 
-function barChartData() {
- /*
- *  This function will be called by barchart.js
- *  It will return a JSON object that will be used
- *  by the barchart to show website names and the
- *  number of visits for that website.
- */
 
-    var returnJSON = {"objects":[]};
-    var j;
-    var dataId;
-    var urlName;
-
-    for (j = 0; j < data.url.length; j++) {
-        if (data.url[j].urlName.slice(0,6) !== "chrome") {
-            dataId = data.url[j].dataId;
-            urlName = data.url[j].urlName;
-            urlName = urlName.slice(urlName.indexOf("//") + 2);
-            
-            if (urlName.indexOf("/") !== -1) {
-                urlName = urlName.slice(0, urlName.indexOf("/"));
-            }
-        
-            dataMap = returnJSON.objects.map(function(d) { return d['Domain']; });
-            dataIndex = dataMap.lastIndexOf(urlName);
-
-            if (dataIndex === -1) {
-                returnJSON["objects"].push({"Domain":urlName,"Visits":1});
-            }
-            else {
-                returnJSON.objects[dataIndex].Visits ++;
-            }
-        }
-    }
-    return returnJSON;
-}
