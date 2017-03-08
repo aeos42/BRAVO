@@ -1,15 +1,35 @@
+// D3 code adapted from http://bl.ocks.org/bceskavich/a9a365467b5e1d2075f6
+// Billy Ceskavich's Block
 
-chrome.runtime.sendMessage({greeting: "topVisitsData"}, function(response) {
-var dataset = response.website;
-console.log(dataset);
-//Adapted from http://bl.ocks.org/bceskavich/a9a365467b5e1d2075f6
-//Billy Ceskavich's Block
+/* Overall strategy
+ *  1. Send message to the listener on background page to send query data
+ * 	2. Take n=topDomains mergedDomains and put into the display dataSet
+ * 	3. Present the D3 bargraph visualization
+ */
+var topDomains = 50;	//max number of domains to display
+var w = 900
+var h = 500
+ 	
+//  1. Send message to the listener on background page to send query data
+//chrome.runtime.sendMessage({greeting: "topVisitsData"}, function(response) {
+chrome.runtime.sendMessage({greeting: "topVisitsD3"}, function(response) {
+	var data = response.website;
+ 
+console.log(data);   
 
-        // Dimensions for the chart: height, width, and space b/t the bars
-        var margins = {top: 30, right: 50, bottom: 200, left: 100}
-        var height = 400 - margins.left - margins.right,
-            width = 900 - margins.top - margins.bottom,
-            barPadding = 5
+// 	2. Take n=topDomains mergedDomains and put into the display dataSet
+	var dataset = [];
+	var i;
+	for (i=0; i<topDomains; i++) {	//just use top site to display
+		dataset.push({Domain: data[i].Domain, Visits: data[i].Visits});
+	}
+
+// 	3. Present the D3 bargraph visualization
+     // Dimensions for the chart: height, width, and space b/t the bars
+        var margins = {top: 30, right: 50, bottom: 200, left: 50}
+        var height = h - margins.top - margins.bottom,
+            width = w - margins.left - margins.right,
+            barPadding = 1
 
         // Create a scale for the y-axis based on data
         // >> Domain - min and max values in the dataset
@@ -102,7 +122,7 @@ console.log(dataset);
           .call(xAxis)
           .selectAll("text")
             .style("text-anchor", "end")
-            .attr("dx", "-.8em")
+            .attr("dx", "-.3em")
 			.attr("dy", ".35em")
 			.attr("transform", "rotate(-45)");
 

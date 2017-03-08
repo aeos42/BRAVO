@@ -1,10 +1,21 @@
-chrome.runtime.sendMessage({greeting: "timeofdayData"}, function(response) {
+// D3 code is adapted from http://bl.ocks.org/ericcoopey/6382449
+// Coopey's Block 6382449
+
+/* Overall strategy
+ *  1. Send message to the listener on background page to send query data
+ * 	2. Display the scatterplot visualization using D3
+ */
+var w = 900
+var h = 500
+ 
+//  1. Send message to the listener on background page to send query data
+chrome.runtime.sendMessage({greeting: "timeofdayD3"}, function(response) {
 var data = response.timeSlot;
 
-//console.log(data)
+// 	2. Display the scatterplot visualization using D3
     var margin = {top: 20, right: 15, bottom: 60, left: 60}
-      , width = 960 - margin.left - margin.right
-      , height = 500 - margin.top - margin.bottom,
+      , width = w - margin.left - margin.right
+      , height = h - margin.top - margin.bottom,
       padding = -(margin.left+30);
     
     var x = d3.scale.linear()
@@ -29,7 +40,7 @@ var data = response.timeSlot;
         
     // draw the x axis
     var xAxis = d3.svg.axis()
-	.scale(x)
+	.scale(x)  
 	.orient('bottom');
 	
 	chart.append("text")
@@ -44,8 +55,6 @@ var data = response.timeSlot;
 	.attr('class', 'main axis date')
 	.call(xAxis);
 	
-
-
     // draw the y axis
     var yAxis = d3.svg.axis()
 	.scale(y)

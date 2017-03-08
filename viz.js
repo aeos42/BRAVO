@@ -6,4 +6,6 @@ window.onload = function(){
         chrome.tabs.create({url:chrome.extension.getURL("viz2.html")});});
     document.getElementById("viz3").addEventListener("click", function(){
         chrome.tabs.create({url:chrome.extension.getURL("viz3.html")});});
+    document.getElementById("viz4").addEventListener("click", function(){
+        chrome.tabs.create({url:chrome.extension.getURL("viz4.html")});});
 };
