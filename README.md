@@ -1,4 +1,4 @@
-﻿# BRAVO
+# BRAVO
 #
 <h2>A chrome extension that visualizes your browser history data.</h2>
 <h3>Who:</h3>
