@@ -25,7 +25,7 @@ chrome.tabs.onCreated.addListener(function(createdTab) {
     if (data["tabs"].length === 0) {
         dataId = 1;
     }
-    // Othe1rwise the dataId will be one more than the last dataId
+    // Otherwise the dataId will be one more than the last dataId
     else {
         dataId = data.tabs[data["tabs"].length - 1].dataId + 1;
     }
@@ -37,27 +37,27 @@ chrome.tabs.onCreated.addListener(function(createdTab) {
 
 // Triggers when the the selected tab changes
 chrome.tabs.onActivated.addListener(function(info) {
-    /*
-     *  When the tab selection changes, we need to add
-     *  a new entry to the activeChanged object.
-     *  We also need to check to make sure there is a data
-     *  entry for the tab already.
-     *
-     */
+/*
+ *  When the tab selection changes, we need to add
+ *  a new entry to the activeChanged object.
+ *  We also need to check to make sure there is a data
+ *  entry for the tab already.
+ *
+ */
 
     dataMap = data.tabs.map(function(d) { return d['tabId']; });
     dataIndex = dataMap.lastIndexOf(info.tabId);
-    /*
-     *  There are two reasons why an active tab would not have an entry yet
-     *  Reason One:
-     *      For some reason, certain websites such as Facebook
-     *      will update with a completely new tabId.
-     *      When this happens, the tab gets activated before it gets updated.
-     *  Reason Two:
-     *      The tab was open before data started recording
-     *  This checks to see if there is a data entry yet for the active tab
-     *  If one is not there, it adds it
-     */
+/*
+ *  There are two reasons why an active tab would not have an entry yet
+ *  Reason One:
+ *      For some reason, certain websites such as Facebook
+ *      will update with a completely new tabId.
+ *      When this happens, the tab gets activated before it gets updated.
+ *  Reason Two:
+ *      The tab was open before data started recording
+ *  This checks to see if there is a data entry yet for the active tab
+ *  If one is not there, it adds it
+ */
     if (dataIndex === -1) {
         if (data["tabs"].length === 0) {
             dataId = 1;
@@ -66,14 +66,14 @@ chrome.tabs.onActivated.addListener(function(info) {
             dataId = data.tabs[data["tabs"].length - 1].dataId + 1;
         }
         data["tabs"].push({"dataId":dataId,"tabId":info.tabId});
-        /*
-         *  Now we check if the tab was open already when
-         *  data started recording.
-         *  If it was, we need to add new entries
-         *  to the following objects
-         *      starts
-         *      url
-         */
+    /*
+     *  Now we check if the tab was open already when
+     *  data started recording.
+     *  If it was, we need to add new entries
+     *  to the following objects
+     *      starts
+     *      url
+     */
         chrome.tabs.get(info.tabId, function(tab) {
             if (tab.status === 'complete') {
                 data["starts"].push({"dataId":dataId,"tabId":info.tabId,"startTime":Date()});
@@ -165,32 +165,14 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
     data["ends"].push({"dataId":dataId,"tabId":tabId,"endTime":Date()});
 });
 
-
-
-
-//pie chart message reciever
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.greeting == "pieChartData") {
             var response = pieChartData();
             sendResponse(response);
-        }
-    });
-
-//active trace message reciever
-
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.greeting == "activeTraceData") {
-            var response = activeTraceData();
-            sendResponse(response);
-        }
-    });
-
-
-
-
-
+        } 
+  });
+  
 function showWebsites() {
     var i;
     for (i = 0; i < data.url.length; i++) {
@@ -283,7 +265,7 @@ function pieChartData() {
             dataId = data.url[j].dataId;
             urlName = data.url[j].urlName;
             urlName = urlName.slice(urlName.indexOf("//") + 2);
-
+            
             if (urlName.indexOf("/") !== -1) {
                 urlName = urlName.slice(0, urlName.indexOf("/"));
             }
@@ -329,98 +311,17 @@ function pieChartData() {
             activeTime = activeTime/1000;
             dataMap = returnJSON.objects.map(function(d) { return d['title']; });
             dataIndex = dataMap.lastIndexOf(urlName);
-
+            
             if (dataIndex === -1) {
                 returnJSON["objects"].push({"title":urlName,"time":activeTime});
             }
             else {
                 returnJSON.objects[dataIndex].time += activeTime;
             }
-
+            
         }
     }
     return returnJSON;
 }
 
-/*
-  function that prepares the data for activetrace
-*/
 
-//var data = {"tabs":[],"activeChanged":[],"starts":[],"ends":[],"url":[]};
-/*
- *                                       data
- *      tabs      |   activeChanged |   starts      |   ends        |   url
- *      ------------------------------------------------------------------------
- *      dataId  <-|-> dataId      <-|-> dataId    <-|-> dataId    <-|-> dataId
- *      tabId   <-|-> tabId       <-|-> tabId     <-|-> tabId     <-|-> tabId
- *                |   changeTime    |   startTime   |   endTime     |   urlName
-*/
-
-
-function activeTraceData()
-
-
-
-{
-
-    var traceData = {"tabs":[],"activeChanged":[],"starts":[],"ends":[],"url":[]};
-
-    var i;
-    var j;
-
-    for (i = 0; i < data.tabs.length; i++)
-    {
-
-        //grab tabs, and remove the fresh tabs
-        if (data.url[i].urlName.slice(0,6) !== "chrome")
-        {
-            traceData.tabs.push(data.tabs[i]);
-        }
-
-}
-
-    //populate the other lists
-    for (i = 0; i < traceData.tabs.length; i++)
-    {
-
-        /*
-          logic of all of these for loops is that if the dataid matches with cleaned tabs data,
-          push the attribute onto the cleaned data
-        */
-
-        for (j = 0; j < data.activeChanged.length; j++)
-        {
-            if (traceData.tabs[i].dataId === data.activeChanged[j].dataId)
-            {
-                traceData.activeChanged.push(data.activeChanged[j]);
-            }
-        }
-
-        for (j = 0; j < data.starts.length; j++)
-        {
-            if (traceData.tabs[i].dataId === data.starts[j].dataId)
-            {
-                traceData.starts.push(data.starts[j]);
-            }
-        }
-
-        for (j = 0; j < data.ends.length; j++)
-        {
-            if (traceData.tabs[i].dataId === data.ends[j].dataId)
-            {
-                traceData.ends.push(data.ends[j]);
-            }
-        }
-
-        for (j = 0; j < data.url.length; j++)
-        {
-            if (traceData.tabs[i].dataId === data.url[j].dataId)
-            {
-                traceData.url.push(data.url[j]);
-            }
-        }
-
-    }
-
-    return traceData;
-}
