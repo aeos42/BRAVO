@@ -1,0 +1,42 @@
+{
+    "name": "sites",
+    "children": [
+        {
+            "name": "netflix",
+            "children": [
+                {
+                    "name": "romantic",
+                    "children":[
+                    {"name": "rom-com", "time": 50},
+                    {"name": "tragedy", "time": 20},
+                    {"name": "happy", "time": 45}
+                ]
+            }
+            ]
+        },
+        {
+            "name": "hbo",
+            "children": [
+                {
+                    "name": "series",
+                    "children": [
+                    {"name": "girls", "time": 30},
+                    {"name": "big little lies", "time": 45}
+                    ]
+                },
+                {
+                    "name": "movies",
+                    "children": [
+                        {"name": "movie 1", "time": 100,
+                        "children":[
+                            {"name": "subtitles", "time": 10}
+                        ]
+                        },
+                        {"name": "movie 2", "time": 150},
+                        {"name": "movie 3", "time": 10}
+                    ]
+                }
+            ]
+        }
+    ]
+}
