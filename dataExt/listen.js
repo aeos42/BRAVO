@@ -26,7 +26,7 @@ chrome.windows.onRemoved.addListener(function(winID){
 		//anything in here is optional
 		alert("Saved!");	
 	});
-}
+});
 
 // Triggers when a new tab is created
 chrome.tabs.onCreated.addListener(function(createdTab) {
