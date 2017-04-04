@@ -11,6 +11,23 @@ var dataId;
 var dataIndex;
 var dataMap;
 
+// Pull data from local storage
+// Needs a test case for when data has not yet been saved
+chrome.local.storage.get("savedData", function(items){
+	if(items.savedData){
+		data = items.savedData;
+		alert(Loaded!);
+	}
+});
+
+//Save data periodically whenever a window is closed
+chrome.windows.onRemoved.addListener(function(winID){
+	chrome.local.storage.set({"savedData": data}, function(){
+		//anything in here is optional
+		alert(Saved!);	
+	});
+}
+
 // Triggers when a new tab is created
 chrome.tabs.onCreated.addListener(function(createdTab) {
 /*

@@ -22,7 +22,10 @@
     "bookmarks",  // if we extend to bookmarks
     "debugger",
     "downloads",  // if we extend to downloads
-    "topSites"
+    "topSites",
+    "background",
+    "storage",
+    "unlimitedStorage"
    ],
    "background": {
 	   "scripts": ["listen.js","topVisits.js"]
