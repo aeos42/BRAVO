@@ -13,7 +13,7 @@ var dataMap;
 
 // Pull data from local storage
 // Needs a test case for when data has not yet been saved
-chrome.local.storage.get("savedData", function(items){
+chrome.storage.local.get("savedData", function(items){
 	if(items.savedData){
 		data = items.savedData;
 		alert("Loaded!");
@@ -22,7 +22,7 @@ chrome.local.storage.get("savedData", function(items){
 
 //Save data periodically whenever a window is closed
 chrome.windows.onRemoved.addListener(function(winID){
-	chrome.local.storage.set({"savedData": data}, function(){
+	chrome.storage.local.set({"savedData": data}, function(){
 		//anything in here is optional
 		alert("Saved!");	
 	});
