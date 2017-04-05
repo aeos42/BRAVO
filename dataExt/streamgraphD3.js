@@ -17,6 +17,7 @@ var selectGraph = "visits"  //'visits' or 'dwell' for initial graph
 //  1. Send message to the listener on background page to send query data
 chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function(response) {
 	data = response.pq;
+	console.log("Data returned to streamgraphD3.js", data);
 	retlabel = response.label;
 	color = "rainbow2";
 //	chart("rainbow2");
@@ -232,6 +233,11 @@ function updateChart(charttype) {
 		data = response.pq;
 		retlabel = response.label;
 		//update data
+		/*
+		if (response.graph == "dwell") {
+			data = data.slice(0,588);
+		}
+		*/
 		data.forEach(function(d) {
 			d.date = format.parse(d.date);
 			d.value = +d.value;

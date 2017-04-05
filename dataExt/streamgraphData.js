@@ -10,14 +10,13 @@
 */
 
 //======TESTING ======
-var numDays = 30;	//0 - all history, otherwise number of days of history
+var numDays = 60;	//0 - all history, otherwise number of days of history
 var maxStreams = 36;
 var dwellTimeOn;// = true
 var maxDwellHours = 4;	//stop counting dwelltime after this limit
 //====================
 var msecPerHour = 1000 * 60 *60;
 var msecPerDay 	= msecPerHour * 24;  //one day of milliseconds
-var maxDwellTime = maxDwellHours * 60 * 60;
 var searchStartTime = (numDays == 0 ? 0: (new Date).getTime() - msecPerDay*numDays);
 
 var data = [];		//dataset for SQL queries
@@ -28,8 +27,8 @@ var data = [];		//dataset for SQL queries
 		return data[data.length-1].visitTime;
 	}
 	data.calculateDwell = function() {  //magic - how long did we linger?
-		for (var i=0; i<data.length-2; i++) {  //convert to seconds
-			data[i].dwellTime = Math.min(maxDwellTime, ((data[i+1].visitTime - data[i].visitTime)/1000)/3600);
+		for (var i=0; i<data.length-1; i++) {  //convert to seconds
+			data[i].dwellTime = Math.min(maxDwellHours, (((data[i+1].visitTime - data[i].visitTime)/1000)/3600));
 		}
 		data[data.length-1].dwellTime = 0; // last visit has no dwell time
 	}	
@@ -100,42 +99,44 @@ var processVisits = function(h, visitItems) {
         		
 //	4. Process the final data set (sort, calculate dwell times, diagnostics
 var onAllVisitsProcessed = function() {
-	console.time("Sort, dwell and query");
+	console.time("Sort, calculate dwell and query");
     data.sort(function(a, b) {
 		return parseFloat(a.visitTime) - parseFloat(b.visitTime); 
     });
+    console.log("Completed initial data: dataset size - prior to SQL queries:", data.length,  data);
     data.calculateDwell();
 	//diagQueries();
 	prodQueries();
-	console.timeEnd("Sort, dwell and query");
+	console.timeEnd("Sort, calculate dwell and query");
 };
 
 //	5. Build alaSQL query results for D3 operations
 function prodQueries(dwell) {
 //========== Production Queries =================================
 	var pq = [], pq1 = [], pq2=[], pq3=[], pq4=[], pq5=[], pq6=[], pq7=[], pq8=[];
+	//test stuff for mathilda
 
-	//console.log("\nProduction Query 1 ================");
-	//console.log("Line 96 Completed initial data: dataset size:", data.length,  data);
-	
+
 	// domain list use to fill gaps
-//	pq2 = alasql("SELECT domain, COUNT(*) FROM ? GROUP BY domain ORDER BY COUNT(*) DESC LIMIT " + maxStreams.toString(), [data]);
 	alasql('IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS \
                WHERE TABLE_NAME = "topsites") DROP VIEW topsites');
 	if (dwell) {
-		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, ROUND(SUM(dwellTime),4) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(),[data]);
-		pq6= alasql("SELECT domain, ROUND(SUM(dwellTime),4) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
-		pq4 = alasql("SELECT domain as [key], ROUND(SUM(dwellTime),4) AS [value], dateStamp as date FROM ? JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
+		console.time("alaSQL dwell query")
+		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(),[data]);
+		pq6= alasql("SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
+		pq4 = alasql("SELECT domain as [key], SUM(dwellTime) AS [value], dateStamp as date FROM ? JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
 		//consoleQueryStats(pq4, data, "Visit count BY Top N domains, date");
 		for (var k in pq6) {  //make sure we have a value for every date
 			fillGaps(pq4, Math.max(searchStartTime, data.startTime()), data.endTime(), pq6[k].domain);
 		}
 		//consoleQueryStats(pq4, data, "Dwell time BY Top N domain - Gap Filled, date");
 		pq = alasql("SELECT [key],date, SUM([value]) AS [value] FROM ? GROUP BY [key], date ORDER BY [key], date", [pq4]);
-		//consoleQueryStats(pq, data, "FINAL DATASTREAM");
+		consoleQueryStats(pq, data, "alaSQL Dwell Query");
 		streamQuery.pq = pq;
+		console.timeEnd("alaSQL dwell query");
 	}
 	else {
+		console.time("alaSQL visits query")
 		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
 		pq6= alasql("SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
 		pq4 = alasql("SELECT domain as [key], COUNT(*) AS [value], dateStamp AS date FROM ? JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
@@ -145,8 +146,9 @@ function prodQueries(dwell) {
 		}
 		//consoleQueryStats(pq4, data, "Visit count BY Top N domain - Gap Filled, date");	
 		pq1 = alasql("SELECT [key],date, SUM([value]) AS [value] FROM ? GROUP BY [key], date ORDER BY [key], date", [pq4]);
-		//consoleQueryStats(pq1, data, "FINAL DATASTREAM");
+		consoleQueryStats(pq1, data, "alaSQL Visits Query");
 		streamQuery.pq=pq1;
+		console.timeEnd("alaSQL visits query");
 	}
 
 	function fillGaps(q, start,end,name) {
