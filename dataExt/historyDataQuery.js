@@ -16,6 +16,7 @@ var usecPerDay 	= 1000 * 60 * 60 * 24;  //one day of microseconds
 //  1a. Setup listener for TopVisits and WordCloud
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+		console.log(sender.tab ? "test" + sender.tab.url : "foo");
  		var daysAgo = (request.days == 0 ? 0 : (new Date).getTime() - request.days*usecPerDay);
         if (request.greeting == "topVisitsD3") {
 			chrome.history.search({text: '', startTime: 0, maxResults: 10000}, buildData);
@@ -23,7 +24,7 @@ chrome.runtime.onMessage.addListener(
 				'SELECT domain, SUM(visitCount) AS visits FROM ? \
 				 GROUP by domain ORDER BY visits ' + request.sort + ' LIMIT '
 					+ request.rows.toString(), [visits.history]
-				);  
+				); 
 			sendResponse(query1);
 			visits.history = [];	// clear history array
         }

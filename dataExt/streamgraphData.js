@@ -7,20 +7,45 @@
  * 	3. Augment any data items, 'join' history and visit data and push to data array
  * 	4. Process the final data set (sort, calculate dwell times, diagnostics
  * 	5. Build alaSQL query results for D3 operations
-*/
+ */
 
-//======TESTING ======
-var numDays = 60;	//0 - all history, otherwise number of days of history
-var maxStreams = 36;
-var dwellTimeOn;// = true
-var maxDwellHours = 4;	//stop counting dwelltime after this limit
-var maxactiveTraceDataItems = 100;
-//====================
-var msecPerHour = 1000 * 60 *60;
-var msecPerDay 	= msecPerHour * 24;  //one day of milliseconds
-var searchStartTime = (numDays == 0 ? 0: (new Date).getTime() - msecPerDay*numDays);
+// ======TESTING ======
+var streamgraphNumDays = 60;	//0 - all history, otherwise number of days of history
+var streamgraphMaxDomains = 36;
+var dwellTimeOn;
+var maxDwellHours = 4;			//stop counting dwelltime after this limit
 
-var data = [];		//dataset for SQL queries
+// ==== Active trace testing variables ===========================
+var activeTraceMaxDataItems = 100000;   //we might reduce later to improve performance
+
+/* this will return whole days of info and up to the current time for today. 
+ * so if you select 1, a partial day of data is returned and the last start time
+ * will be close to the current time that you ran the query.  
+ * We also set the end time to be 23:59 if the end time goes into the next calendar day.
+ * This enforces a rule that start time is always the same or less than the end time.
+ */
+var activeTraceNumDays = 1; 
+
+/* how many domains of data are represented in the result
+ * you need to select at least 1 to get any data 
+ * these are sorted to return domains with the top total dwell time
+ * over the time frame selected
+ */
+var activeTraceMaxDomains = 30;  //how many bars you 
+
+/* smallest size window that you want returned
+ * measured in hours i.e .0833 = 5 min .01667 = 1 min
+ * if you use 0 you will see windows where start time and end times are identical
+ */
+var activeTraceMinWindow = .016676 
+//============================================================
+
+var msecPerDay 	= 24 * 60 * 60 * 1000;  //one day of milliseconds
+var searchStartTime 		   = (streamgraphNumDays == 0 ? 0: (new Date).getTime() - msecPerDay*streamgraphNumDays);
+
+//var searchStartTimeActiveTrace = (streamgraphNumDays == 0 ? 0: (new Date).getTime() - msecPerDay*activeTraceNumDays);
+var queryStartTimeActiveTrace = (streamgraphNumDays == 0 ? 0: msecSinceDay(activeTraceNumDays));
+var data = [];		//dataset generated from chrome calls - used for all SQL queries
 	data.startTime = function() {
 		return data[0].visitTime;
 	}
@@ -28,17 +53,28 @@ var data = [];		//dataset for SQL queries
 		return data[data.length-1].visitTime;
 	}
 	data.calculateDwell = function() {  //magic - how long did we linger?
-		for (var i=0; i<data.length-1; i++) {  //convert to seconds
+		for (var i=0; i<data.length-1; i++) { 
 			dwell = data[i+1].visitTime - data[i].visitTime;
-			data[i].dwellTime = Math.min(maxDwellHours, ((dwell/1000)/3600));
-			data[i].visitStartTime = timeOfDay(data[i].visitTime); // for activeTrace D3
-			data[i].visitEndTime = timeOfDay(data[i+1].visitTime); // for activeTrace D3
+			data[i].dwellTime = Math.min(maxDwellHours, dwell/3600/1000); //this is stored as hours
 		}
 		data[data.length-1].dwellTime = 0; // last visit has no dwell time
+	}
+	data.calculateActiveTrace = function() {
+		for (var i=0; i<data.length-1; i++) { 
+			data[i].visitStartTime = timeOfDay(data[i].visitTime);
+			data[i].visitStartTimeStamp = timeStamp(data[i].visitTime);
+			data[i].visitEndTime = timeOfDay(data[i+1].visitTime); 
+			data[i].visitEndTimeStamp = timeStamp(data[i+1].visitTime);
+			ds1 = new Date(data[i].visitTime);
+			ds2 = new Date(data[i+1].visitTime);
+			if (dateStamp(ds1) != dateStamp(ds2)) {
+				data[i].visitEndTime = "23:59";   //make sure start time is not after end time
+			}
+		}
 	}	
 
 var streamQuery	= {pq:[], label: dwellTimeOn ? "hours" : "visits"};	// Top Visits return data
-var activeTraceQuery = {pq:[]};  // active Trace return data
+var activeTraceQuery = {hourdata:[], timestampdata:[]};  // active Trace return data
 var testQuery 	= {pq:[], label: "visits"};
 
 //  1. Setup listener for D3 visualizations
@@ -68,7 +104,7 @@ chrome.runtime.onMessage.addListener(
 //	2. Call chrome.history and chrome.visits with callback functions
 var numRequestsOutstanding = 0;
 var h;		// single record of returned history results
-console.time("Chrome history/search call");
+console.time("Chrome history-search call");
 chrome.history.search({text: '', maxResults: 1000000, startTime: searchStartTime},
     function(historyItems) {   // For each history item, get details on all visits.
       for (var i = 0; i < historyItems.length; ++i) {
@@ -82,7 +118,7 @@ chrome.history.search({text: '', maxResults: 1000000, startTime: searchStartTime
 	    chrome.history.getVisits({url: h.url}, processVisitsWithUrl(h));
         numRequestsOutstanding++;
       }
-console.timeEnd("Chrome history/search call");
+console.timeEnd("Chrome history-search call");
 });
 
 // 	3. Augment any data items, 'join' history and visit data and push to data array
@@ -110,10 +146,11 @@ var onAllVisitsProcessed = function() {
 		return parseFloat(a.visitTime) - parseFloat(b.visitTime); 
     });
     data.calculateDwell();
+    data.calculateActiveTrace(); 
     console.log("Completed initial data: dataset size - prior to SQL queries:", data.length,  data);
 
 	//diagQueries();
-	prodQueries();
+	prodQueries();  //can either do this at load or per extension...
 	console.timeEnd("Sort, calculate dwell and query");
 };
 
@@ -121,20 +158,32 @@ var onAllVisitsProcessed = function() {
 function prodQueries(dwell) {
 //========== Production Queries =================================
 	var pq = [], pq1 = [], pq2=[], pq3=[], pq4=[], pq5=[], pq6=[], pq7=[], pq8=[];
-	//stuff for Adam's query
-	console.time("alaSQL activeTrace query");
-	pq2 =  alasql("SELECT domain as urlName, visitStartTime AS [start], visitEndTime AS [end] FROM ? ORDER BY dwellTime DESC LIMIT " + maxactiveTraceDataItems.toString(), [data]);
-	console.log("*********************\ndate query for active Trace:", pq2)
-	console.timeEnd("alaSQL activeTrace query");
-	activeTraceQuery.pq = pq2;
-
+	
+	//Active Trace Query
+	alasql('IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS \
+               WHERE TABLE_NAME = "topsites") DROP VIEW topsites');
+	console.time("alaSQL activeTrace query: ");
+	pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ? \
+					WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + "))\
+					GROUP BY domain ORDER BY [value] DESC LIMIT " + activeTraceMaxDomains.toString(),[data]);
+	pq2 =  alasql("SELECT domain as urlName, visitStartTime AS [start], visitEndTime AS [end] FROM ? JOIN topsites USING domain \
+					WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + "))\
+					ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [data]);
+	pq3 =  alasql("SELECT domain as urlName, visitStartTimeStamp AS [start], visitEndTimeStamp AS [end] FROM ? JOIN topsites USING domain \
+					WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + "))\
+					ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [data]);				
+    consoleQueryStats(pq2, data, "alaSQL HH:MM - Active Trace data by domain, start and end");
+    consoleQueryStats(pq3, data, "alaSQL XX/XX/XX HH:MM - Active Trace data by domain, start and end");
+    activeTraceQuery.hourdata = pq2;
+    activeTraceQuery.timestampdata = pq3;
+    
 	// domain list use to fill gaps
 	alasql('IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS \
                WHERE TABLE_NAME = "topsites") DROP VIEW topsites');
 	if (dwell) {
 		console.time("alaSQL dwell query")
-		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(),[data]);
-		pq6= alasql("SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
+		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(),[data]);
+		pq6= alasql("SELECT domain, SUM(dwellTime) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
 		pq4 = alasql("SELECT domain as [key], SUM(dwellTime) AS [value], dateStamp as date FROM ? JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
 		//consoleQueryStats(pq4, data, "Visit count BY Top N domains, date");
 		for (var k in pq6) {  //make sure we have a value for every date
@@ -148,8 +197,8 @@ function prodQueries(dwell) {
 	}
 	else {
 		console.time("alaSQL visits query")
-		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
-		pq6= alasql("SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + maxStreams.toString(), [data]);
+		pq5 = alasql("CREATE VIEW topsites AS SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
+		pq6= alasql("SELECT domain, COUNT(*) AS [value] FROM ? GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
 		pq4 = alasql("SELECT domain as [key], COUNT(*) AS [value], dateStamp AS date FROM ? JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
 		//consoleQueryStats(pq4, data, "Visit count BY Top N domains, date");
 		for (var k in pq6) {	//make sure we have a value for every date
@@ -209,17 +258,17 @@ function diagQueries() { // check status of data (debugging)
 	console.log("\tUnique transition 'link' grouped by shortDomain", q4.length);
 	q5 = alasql("SELECT * FROM ? WHERE transition = 'typed' GROUP BY shortDomain", [data]);
 	console.log("\tUnique transition 'typed' grouped by shortDomain", q5.length);
-	q6 = alasql("SELECT transition, COUNT(visitCount) AS total FROM ?  WHERE shortDomain = 'google' GROUP BY transition", [data]);
+	q6 = alasql("SELECT transition, COUNT(visitCount) AS total FROM ?  WHERE GROUP BY transition", [data]);
 	for (i=0; i<q6.length; i++) {
 		console.log("\tTransition type:", q6[i]);
 	}	
 	q7 = alasql("SELECT * FROM ? ORDER by dwellTime DESC", [data]);
-	console.log("\tDwell Times Max hours: ", (q7[0].dwellTime/3600).toFixed(0));
+	console.log("\tDwell Times Max hours: ", (q7[0].dwellTime).toFixed(0));
 	for (i=0; i<10; i++) {
-		console.log("\t\tDwelltimes:", q7[i].domain, ":", (q7[i].dwellTime/3600).toFixed(4), "hours");
+		console.log("\t\tDwelltimes:", q7[i].domain, ":", (q7[i].dwellTime).toFixed(4), "hours");
 	}
 	console.log(q7);
-	q8 = alasql("SELECT shortDomain AS domain, ROUND(SUM(dwellTime/3600),2) AS dwellHours, SUM(visitCount) AS visits  FROM ? GROUP BY shortDomain ORDER BY visits DESC", [data]);
+	q8 = alasql("SELECT shortDomain AS domain, ROUND(SUM(dwellTime),2) AS dwellHours, SUM(visitCount) AS visits  FROM ? GROUP BY shortDomain ORDER BY visits DESC", [data]);
 	console.log("\tDwell time add Visits Highlights: ", q8);
 	q9 = alasql("SELECT shortDomain FROM ? WHERE LEN(shortDomain)>15 GROUP BY shortDomain ORDER BY LEN(shortDomain) DESC", [data]);
 	console.log(q9);
@@ -269,6 +318,15 @@ function dateStamp(dateVal) {
   }
   return date.join("/");
 }
+
+// returns (days-1)*msecIn a Day PLUS msec since midnite
+function msecSinceDay(days) { //used by activeTrace to return partial day results
+	var t = new Date(Date.now());
+	var n = (days-1) * msecPerDay; //get whole days of msec for anything over 1 day long
+	var m = (t.getHours()*60*60)+(t.getMinutes()*60)+(t.getSeconds());
+	return t-(n+m*1000);
+}
+
 
 function url_domain(data) {	//extract domain from URL
 	var    a      = document.createElement('a');

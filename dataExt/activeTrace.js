@@ -4,9 +4,10 @@ var dataset;
 
 chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
-    dataset  = response.pq;
-    console.log(dataset);  //adam - look at the format of this data and let me know if this is what you want
-
+    dataset  = response.hourdata;
+    dataset2 = response.timestampdata;
+    console.log("HH:MM Dataset returned from query", dataset); 
+    console.log("MM/DD/YY HH:MM Dataset returned from query", dataset2);
     var w = 1000;
     var h = 600;
 
