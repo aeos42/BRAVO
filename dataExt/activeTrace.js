@@ -8,8 +8,7 @@ var uniqueDoms = new Set();
 
 chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
-    dataset  = response.pq;
-
+    dataset = response.pq;
 
     //additional data processing
 
