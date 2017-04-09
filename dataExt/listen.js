@@ -16,7 +16,7 @@ var dataMap;
 chrome.storage.local.get("savedData", function(items){
 	if(items.savedData){
 		data = items.savedData;
-		alert("Loaded!");
+		//alert("Loaded!");
 	}
 });
 
@@ -24,7 +24,7 @@ chrome.storage.local.get("savedData", function(items){
 chrome.windows.onRemoved.addListener(function(winID){
 	chrome.storage.local.set({"savedData": data}, function(){
 		//anything in here is optional
-		alert("Saved!");	
+		//alert("Saved!");	
 	});
 });
 
