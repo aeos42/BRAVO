@@ -84,7 +84,7 @@ chrome.runtime.sendMessage({greeting: "pieChartData"}, function(response) {
     // function to rotate the text so that it fits in the wedge slice
     function angle(d) {
                     var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
-        return a > 90 ? a - 180 : a;
-    }
+                    return a > 90 ? a - 180 : a;};
+
 });
 
