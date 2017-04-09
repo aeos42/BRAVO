@@ -1,60 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+  <style>
+
+	body {
+		font: 12px verdana;
+	}
+	
+	text {
+		font: 12px helvetica;
+	}
+
+	div {
+		line-height: 1;
+		font: 14px verdana;
+		font-weight: bold;
+		padding: 12px;
+		border-radius: 2px;
+	}
+
+	rect:hover {
+        fill: Silver;
+    }
+    
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+      
+	axis {
+			font:14px verdana;
+	}
+</style>
   <head>
     <title>BRAVO Visualization I</title>
-    <script src="https://d3js.org/d3.v3.js"></script>
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-        font-family: 'Avenir';
-      }
+    <script type=text/javascript src="https://d3js.org/d3.v3.js"></script>
 
-      h1,
-      button {
-        margin-left: 25px;
-        text-align: left;
-      }
-      
-      h1 {
-        font-size: 25px;
-      }
-
-      button {
-        margin-bottom: 25px;
-      }
-
-      .main {
-        margin: 0px 25px;
-      }
-
-      svg {
-        padding: 20px 40px;
-      }
-
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: black;
-        shape-rendering: crispEdges;
-      }
-
-      text,
-      .axis text {
-        font-size: 11px;
-      }
-
-      rect:hover {
-        fill: orange;
-      }
-    </style>
   </head>
   <body>
     <h1 style="font-family:verdana;">Visualization 1</h1>
     <div class="main">
-      <p><span id="Domain"></span> - <span id="inches"></span></p>
     </div>
-    <script type="text/javascript" src="barchart.js">
+    <script type="text/javascript" src="topVisitsD3.js">
     </script>
   </body>
 </html>
