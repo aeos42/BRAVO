@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+     body {
+        font-size: 14px;
+        font-family: 'Verdana';
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+      
+</style>
   <head>
     <title>BRAVO Visualization I</title>
     <script type=text/javascript src="https://d3js.org/d3.v3.js"></script>
     <script type=text/javascript src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
-    <link rel="stylesheet" href="d3style.css">
   </head>
+
   <body>
     <h1 style="font-family:verdana;">Visualization 3</h1>
     <div class="main">
-      <p></p><span style = "font-size=16px;"</span>Visits by time-of-day (15 min increments since midnite)</p>
+      <p></p><span style = "font-size=14px;"</span>Visits by time-of-day (15 min increments since midnite)</p>
     </div>
     <script type="text/javascript" src="timeofdayD3.js">
     </script>

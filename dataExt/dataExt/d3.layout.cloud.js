@@ -76,7 +76,7 @@ module.exports = function() {
         event.call("end", cloud, tags, bounds);
       }
     }
-  }
+  };
 
   cloud.stop = function() {
     if (timer) {

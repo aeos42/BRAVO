@@ -6,13 +6,13 @@
  *  1. Send message to the listener on background page to send query data
  * 	2. Display the scatterplot visualization using D3
  */
-var w = 900
-var h = 500
+var w = 800;
+var h = 500;
  
 //  1. Send message to the listener on background page to send query data
-chrome.runtime.sendMessage({greeting: "timeofdayD3"}, function(response) {
+chrome.runtime.sendMessage({greeting: "timeOfDayD3"}, function(response) {
 var data = response.timeSlot;
-console.log(data);
+console.log(response);
 // 	2. Display the scatterplot visualization using D3
     var margin = {top: 20, right: 15, bottom: 60, left: 60}
       , width = w - margin.left - margin.right
@@ -31,13 +31,13 @@ console.log(data);
 	.append('svg:svg')
 	.attr('width', width + margin.right + margin.left)
 	.attr('height', height + margin.top + margin.bottom)
-	.attr('class', 'chart')
+	.attr('class', 'chart');
 
     var main = chart.append('g')
 	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 	.attr('width', width)
 	.attr('height', height)
-	.attr('class', 'main')   
+	.attr('class', 'main');
         
     // draw the x axis
     var xAxis = d3.svg.axis()
@@ -83,4 +83,4 @@ console.log(data);
 		.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
 		.attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
 		.text("Visits");
-})
+});

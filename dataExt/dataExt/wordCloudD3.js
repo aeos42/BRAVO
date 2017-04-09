@@ -9,10 +9,10 @@
  * 	3. Display the wordCloud
  */
 
-var maxFont = 150;  
+var maxFont = 100;  
 var minFont = 30;
 var maxSize;	//used for scaling - future
-var w = 900;
+var w = 800;
 var h = 500;
 var maxDataRows = 30; 	//max words in the wordCloud
 var numDays = 0;		//0 - all time, 1 - 1 day, 7 - 1 week, 30-30days, etc
@@ -22,10 +22,10 @@ chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "D
 	function(response) {
 	var frequencyList = response.wordList;
 	var i;
-
+console.log(frequencyList);
 // 2. Scale the fontsize for the wordCloud
-	var maxSize = Math.max.apply(Math,frequencyList.map(function(o){return o.size;}))
-	var minSize = Math.min.apply(Math,frequencyList.map(function(o){return o.size;}))
+	var maxSize = Math.max.apply(Math,frequencyList.map(function(o){return o.size;}));
+	var minSize = Math.min.apply(Math,frequencyList.map(function(o){return o.size;}));
 
 
 // 	3. Display the wordCloud
@@ -48,7 +48,7 @@ chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "D
                 .append("g")
                 // without the transform, words words would get cutoff to the left and top, they would
                 // appear outside of the SVG area
-                .attr("transform", "translate(375,275)")  //pushes cloud over and down
+                .attr("transform", "translate(300,230)")  //pushes cloud over and down
                 .selectAll("text")
                 .data(words)
                 .enter().append("text")

@@ -22,10 +22,6 @@ body {
 }
 
 
-.bar:hover {
-    stroke: #000
-}
-
 
 p {
     font-size: 12pt
@@ -35,4 +31,14 @@ div {
 
     margin: 20px
 
+}
+
+.dataRects {
+
+    fill: blue
+
+}
+
+.dataRects:hover {
+    stroke: black
 }
