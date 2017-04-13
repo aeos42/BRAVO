@@ -65,22 +65,22 @@ streamgraphDwell.query = function () {
     alasql("IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = 'topsites') DROP VIEW topsites");
 
     pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ?" +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
+        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [chromedata]);
 
     pq6 = alasql("SELECT domain, SUM(dwellTime) AS [value] FROM ? " +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
+        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [chromedata]);
 
     pq4 = alasql("SELECT domain as [key], SUM(dwellTime) AS [value], dateStamp as date FROM ? " +
-        "JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
+        "JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [chromedata]);
 
-    //consoleQueryStats(pq4, data, "Visit count BY Top N domains, date");
+    //consoleQueryStats(pq4, chromedata, "Visit count BY Top N domains, date");
     //make sure we have a value for every date
     for (var k in pq6) {
-        fillGaps(pq4, Math.max(streamgraphSearchStartTime, data.startTime()), data.endTime(), pq6[k].domain);
+        fillGaps(pq4, Math.max(streamgraphSearchStartTime, chromedata.startTime()), chromedata.endTime(), pq6[k].domain);
     }
-    //consoleQueryStats(pq4, data, "Dwell time BY Top N domain - Gap Filled, date");
+    //consoleQueryStats(pq4, chromedata, "Dwell time BY Top N domain - Gap Filled, date");
     this.pq = alasql("SELECT [key],date, SUM([value]) AS [value] FROM ? GROUP BY [key], date ORDER BY [key], date", [pq4]);
-    //consoleQueryStats(pq, data, "alaSQL Dwell Query");
+    //consoleQueryStats(pq, chromedata, "alaSQL Dwell Query");
     console.timeEnd("alaSQL streamgraph dwell query");
 };
 
@@ -92,21 +92,21 @@ streamgraphVisits.query = function () {
         "WHERE TABLE_NAME = 'topsites') DROP VIEW topsites");
 
     pq5 = alasql("CREATE VIEW topsites AS SELECT domain, COUNT(*) AS [value] FROM ? " +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
+        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [chromedata]);
 
     pq6 = alasql("SELECT domain, COUNT(*) AS [value] FROM ? " +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [data]);
+        "GROUP BY domain ORDER BY [value] DESC LIMIT " + streamgraphMaxDomains.toString(), [chromedata]);
 
     pq4 = alasql("SELECT domain as [key], COUNT(*) AS [value], dateStamp AS date FROM ? " +
-        "JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [data]);
+        "JOIN topsites USING domain GROUP by domain, dateStamp ORDER BY dateStamp", [chromedata]);
 
-    //consoleQueryStats(pq4, data, "Visit count BY Top N domains, date");
+    //consoleQueryStats(pq4, chromedata, "Visit count BY Top N domains, date");
     for (var k in pq6) {	//make sure we have a value for every date
-        fillGaps(pq4, Math.max(streamgraphSearchStartTime, data.startTime()), data.endTime(), pq6[k].domain);
+        fillGaps(pq4, Math.max(streamgraphSearchStartTime, chromedata.startTime()), chromedata.endTime(), pq6[k].domain);
     }
-    //consoleQueryStats(pq4, data, "Visit count BY Top N domain - Gap Filled, date");
+    //consoleQueryStats(pq4, chromedata, "Visit count BY Top N domain - Gap Filled, date");
     this.pq = alasql("SELECT [key],date, SUM([value]) AS [value] FROM ? GROUP BY [key], date ORDER BY [key], date", [pq4]);
-    //consoleQueryStats(pq1, data, "alaSQL Visits Query");
+    //consoleQueryStats(pq1, chromedata, "alaSQL Visits Query");
     console.timeEnd("alaSQL streamgraph visits query");
 };
 
@@ -119,18 +119,18 @@ activeTrace.query = function () { 	//Active Trace Query
 
     alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ? " +
         "WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + activeTraceMaxDomains.toString(), [data]);
+        "GROUP BY domain ORDER BY [value] DESC LIMIT " + activeTraceMaxDomains.toString(), [chromedata]);
 
     pq2 = alasql("SELECT domain as urlName, visitStartTime AS [start], visitEndTime AS [end] FROM ? " +
         "JOIN topsites USING domain " +
         "WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-        "ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [data]);
+        "ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [chromedata]);
 
     pq3 = alasql("SELECT domain as urlName, visitStartTimeStamp AS [start], visitEndTimeStamp AS [end] FROM ? JOIN topsites USING domain " +
         "WHERE ((dwellTime > " + activeTraceMinWindow + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-        "ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [data]);
-    //consoleQueryStats(pq2, data, "alaSQL HH:MM - Active Trace data by domain, start and end");
-    //consoleQueryStats(pq3, data, "alaSQL XX/XX/XX HH:MM - Active Trace data by domain, start and end");
+        "ORDER BY start ASC LIMIT " + activeTraceMaxDataItems.toString(), [chromedata]);
+    //consoleQueryStats(pq2, chromedata, "alaSQL HH:MM - Active Trace data by domain, start and end");
+    //consoleQueryStats(pq3, chromedata, "alaSQL XX/XX/XX HH:MM - Active Trace data by domain, start and end");
     this.hourdata = pq2;
     this.timestampdata = pq3;
     console.timeEnd("alaSQL activeTrace query: ");
@@ -146,7 +146,7 @@ wordCloud.query = function () {
     this.wordList = alasql(
         "SELECT shortDomain AS text, COUNT(*) AS size FROM ? " +
         "WHERE (visitTime >  " + streamgraphSearchStartTime + ") " +
-        "GROUP by shortDomain ORDER BY size DESC LIMIT " + wordcloudMaxWords, [data]);
+        "GROUP by shortDomain ORDER BY size DESC LIMIT " + wordcloudMaxWords, [chromedata]);
     //console.log(this.wordList);
     console.timeEnd("alaSQL wordCloud query: ");
 };
@@ -158,55 +158,55 @@ topVisits.query = function () {
     this.history = alasql(
         "SELECT domain, COUNT(*) AS visits FROM ? " +
         "WHERE (visitTime >  " + streamgraphSearchStartTime + ") " +
-        "GROUP by domain ORDER BY visits DESC LIMIT " + topVisitsMaxDomains, [data]);
+        "GROUP by domain ORDER BY visits DESC LIMIT " + topVisitsMaxDomains, [chromedata]);
     //console.log(this.history);
     console.timeEnd("alaSQL topVisits query: ");
 };
 
 //main data element - generated from chrome calls - used for all SQL queries
-var data = [];
+var chromedata = [];
 
-data.startTime = function () {
-    return data[0].visitTime;
+chromedata.startTime = function () {
+    return chromedata[0].visitTime;
 };
-data.endTime = function () {
-    return data[data.length - 1].visitTime;
+chromedata.endTime = function () {
+    return chromedata[chromedata.length - 1].visitTime;
 };
-data.refresh = function() {
+chromedata.refresh = function() {
     //add 100 msec to last captured element
-    var refreshStartTime = data.endTime() + 100;
+    var refreshStartTime = chromedata.endTime() + 100;
     refreshChromeData(refreshStartTime);
 };
 //magic - how long did we linger?
-data.calculateDwell = function () {
+chromedata.calculateDwell = function () {
     var i, dwell;
     console.time("Calculate: dwell");
-    for (i = 0; i < data.length - 1; i++) {
-        dwell = data[i + 1].visitTime - data[i].visitTime;
+    for (i = 0; i < chromedata.length - 1; i++) {
+        dwell = chromedata[i + 1].visitTime - chromedata[i].visitTime;
         //this is stored as hours
-        data[i].dwellTime = Math.min(maxDwellHours, dwell / 3600 / 1000);
+        chromedata[i].dwellTime = Math.min(maxDwellHours, dwell / 3600 / 1000);
     }
     // last visit has no dwell time
-    data[data.length - 1].dwellTime = 0;
+    chromedata[chromedata.length - 1].dwellTime = 0;
     console.timeEnd("Calculate: dwell");
 };
 
-data.calculateActiveTrace = function () {
+chromedata.calculateActiveTrace = function () {
     console.time("Calculate: ActiveTrace");
-    var m = data[0].visitTime, m1 = timeOfDay(m), m2 = timeStamp(m), m3 = new Date(m);
+    var m = chromedata[0].visitTime, m1 = timeOfDay(m), m2 = timeStamp(m), m3 = new Date(m);
     var n, n1, n2, n3, i, len;
-    for (i = 0, len = data.length-1; i < len; i++) {
-        n = data[i + 1].visitTime;
+    for (i = 0, len = chromedata.length-1; i < len; i++) {
+        n = chromedata[i + 1].visitTime;
         n1 = timeOfDay(n);
         n2 = timeStamp(n);
         n3 = new Date(m);
-        data[i].visitStartTime = m1;
-        data[i].visitStartTimeStamp = m2;
-        data[i].visitEndTime = n1;
-        data[i].visitEndTimeStamp = n2;
+        chromedata[i].visitStartTime = m1;
+        chromedata[i].visitStartTimeStamp = m2;
+        chromedata[i].visitEndTime = n1;
+        chromedata[i].visitEndTimeStamp = n2;
         if (dateStamp(m3) !== dateStamp(n3)) {
             //make sure start time is not after end time
-            data[i].visitEndTime = "23:59";
+            chromedata[i].visitEndTime = "23:59";
         }
         m = n;
         m1 = n1;
@@ -217,7 +217,7 @@ data.calculateActiveTrace = function () {
 };
 
 // Increment the rate count for each visit found (in timeslot array)
-data.calculateTimeOfDay = function () {
+chromedata.calculateTimeOfDay = function () {
     console.time("Calculate: Time of Day");
     var msec, val, i, index, len;
     var d = new Date();
@@ -227,8 +227,8 @@ data.calculateTimeOfDay = function () {
         tod.timeSlot.push({time: (timeInterval * i), rate: 0});
     }
 
-    for (i = 0, len = data.length; i < len; i++) {
-        msec = data[i].visitTime;
+    for (i = 0, len = chromedata.length; i < len; i++) {
+        msec = chromedata[i].visitTime;
         d.setTime(msec - (msec % (60 * timeInterval * 1000)));
         val = d.getHours() * 60 + d.getMinutes();
         index = val / timeInterval;
@@ -241,7 +241,7 @@ data.calculateTimeOfDay = function () {
 //  1. Setup all D3 listeners
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        data.refresh();
+        chromedata.refresh();
         if (request.greeting === "viz5D3") {
             if (request.graph === "dwell") {
                 dwellTimeOn = true;
@@ -263,7 +263,7 @@ chrome.runtime.onMessage.addListener(
             sendResponse(activeTrace);
         }
         else if (request.greeting === "timeOfDayD3") {
-            data.calculateTimeOfDay();
+            chromedata.calculateTimeOfDay();
             sendResponse(tod);
         }
         else if (request.greeting === "wordCloudD3") {
@@ -322,7 +322,7 @@ function refreshChromeData(stime) {
             if ((h.shortDomain.length <= 30) &&
                 (visitItems[i].visitTime >= stime) &&
                 (h.shortDomain.length > 0)) {
-                data.push(extend(visitItems[i], h));
+                chromedata.push(extend(visitItems[i], h));
             }
         }
         if (!--numRequestsOutstanding) {
@@ -332,13 +332,13 @@ function refreshChromeData(stime) {
 }
 //	4. Process the final data set (sort, calculate dwell times, diagnostics
 var onAllVisitsProcessed = function () {
-    data.sort(function (a, b) {
+    chromedata.sort(function (a, b) {
         return parseFloat(a.visitTime) - parseFloat(b.visitTime);
     });
-    data.calculateTimeOfDay();
-    data.calculateDwell();
-    data.calculateActiveTrace();
-    console.log(data, 'Dataset size - prior to SQL queries:', data.length);
+    chromedata.calculateTimeOfDay();
+    chromedata.calculateDwell();
+    chromedata.calculateActiveTrace();
+    console.log(chromedata, 'Dataset size - prior to SQL queries:', chromedata.length);
     //diagQueries();
 
 };
@@ -370,37 +370,37 @@ function consoleQueryStats(q, raw, desc) {
 function diagQueries() {
     var i, t1, t2;
     console.log("Diagnostic check of data");
-    console.log("     Visits: ", data.length);
-    console.log("     Earliest visit time: ", timeStamp(data[0].visitTime));
-    t1 = Math.round(((new Date()).getTime() - data[0].visitTime) / (1000 * 60 * 60), 0);
-    t2 = (data.length / t1).toFixed(2);
+    console.log("     Visits: ", chromedata.length);
+    console.log("     Earliest visit time: ", timeStamp(chromedata[0].visitTime));
+    t1 = Math.round(((new Date()).getTime() - chromedata[0].visitTime) / (1000 * 60 * 60), 0);
+    t2 = (chromedata.length / t1).toFixed(2);
     console.log("     Total hours:         ", t1);
     console.log("     Visits/hour:         ", t2);
-    console.log(data);
+    console.log(chromedata);
     var q1, q2, q3, q4, q5, q6, q7, q8, q9;
-    q1 = alasql("SELECT * FROM ? GROUP BY url", [data]);
+    q1 = alasql("SELECT * FROM ? GROUP BY url", [chromedata]);
     console.log("\tUnique urls ", q1.length);
-    q2 = alasql("SELECT * FROM ? GROUP BY domain", [data]);
+    q2 = alasql("SELECT * FROM ? GROUP BY domain", [chromedata]);
     console.log("\tUnique domains ", q2.length);
-    q3 = alasql("SELECT * FROM ? GROUP BY shortDomain", [data]);
+    q3 = alasql("SELECT * FROM ? GROUP BY shortDomain", [chromedata]);
     console.log("\tUnique shortDomains ", q3.length);
-    q4 = alasql("SELECT * FROM ? WHERE transition = 'link' GROUP BY shortDomain", [data]);
+    q4 = alasql("SELECT * FROM ? WHERE transition = 'link' GROUP BY shortDomain", [chromedata]);
     console.log("\tUnique transition 'link' grouped by shortDomain", q4.length);
-    q5 = alasql("SELECT * FROM ? WHERE transition = 'typed' GROUP BY shortDomain", [data]);
+    q5 = alasql("SELECT * FROM ? WHERE transition = 'typed' GROUP BY shortDomain", [chromedata]);
     console.log("\tUnique transition 'typed' grouped by shortDomain", q5.length);
-    q6 = alasql("SELECT transition, COUNT(visitCount) AS total FROM ?  GROUP BY transition", [data]);
+    q6 = alasql("SELECT transition, COUNT(visitCount) AS total FROM ?  GROUP BY transition", [chromedata]);
     for (i = 0; i < q6.length; i++) {
         console.log("\tTransition type:", q6[i]);
     }
-    q7 = alasql("SELECT * FROM ? ORDER by dwellTime DESC", [data]);
+    q7 = alasql("SELECT * FROM ? ORDER by dwellTime DESC", [chromedata]);
     console.log("\tDwell Times Max hours: ", (q7[0].dwellTime).toFixed(0));
     for (i = 0; i < 10; i++) {
         console.log("\t\tDwelltimes:", q7[i].domain, ":", (q7[i].dwellTime).toFixed(4), "hours");
     }
     console.log(q7);
-    q8 = alasql("SELECT shortDomain AS domain, ROUND(SUM(dwellTime),2) AS dwellHours, SUM(visitCount) AS visits  FROM ? GROUP BY shortDomain ORDER BY visits DESC", [data]);
+    q8 = alasql("SELECT shortDomain AS domain, ROUND(SUM(dwellTime),2) AS dwellHours, SUM(visitCount) AS visits  FROM ? GROUP BY shortDomain ORDER BY visits DESC", [chromedata]);
     console.log("\tDwell time add Visits Highlights: ", q8);
-    q9 = alasql("SELECT shortDomain FROM ? WHERE LEN(shortDomain)>15 GROUP BY shortDomain ORDER BY LEN(shortDomain) DESC", [data]);
+    q9 = alasql("SELECT shortDomain FROM ? WHERE LEN(shortDomain)>15 GROUP BY shortDomain ORDER BY LEN(shortDomain) DESC", [chromedata]);
     console.log(q9);
 }
 //======== HELPER FUNCTIONS =======================
