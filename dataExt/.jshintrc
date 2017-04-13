@@ -1,0 +1,6 @@
+{
+  // Custom Globals
+  "globals"       : {"alasql":true, "chrome":true},        // additional predefined global variables
+  "devel" : true
+  //jshint strict:false, smarttabs:true, forin:true, evil:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, unused:true, curly:true, browser:true, indent:4, maxerr:50, camelcase:true, white:true, latedef:true */
+}

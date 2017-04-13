@@ -13,10 +13,10 @@ var datearray = [];
 var colorrange = [];
 //var data = [];
 var selectGraph = "visits";  //'visits' or 'dwell' for initial graph
-
+var retlabel, color;
 //  1. Send message to the listener on background page to send query data
 chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (response) {
-    data = response.pq;
+    var data = response.pq;
     console.log("Data returned to streamgraphD3.js", data);
     retlabel = response.label;
     color = "rainbow2";
@@ -49,7 +49,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#b3de69"];
     }
 
-    strokecolor = "#000000";
+    var strokecolor = "#000000";
     var format = d3.time.format("%m/%d/%y");
 
 //set dimensions of canvas/graph
@@ -177,11 +177,12 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             svg.selectAll(".layer").transition()
                 .duration(250)
                 .attr("opacity", function (d, j) {
-                    return j != i ? 0.1 : 1;
+                    return j !== i ? 0.1 : 1;
                 });
         })
 
         .on("mousemove", function (d, i) {
+            var mousex;
             mousex = d3.mouse(this);
             mousex = mousex[0];
             var invertedx = x.invert(mousex);
@@ -192,8 +193,8 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
                 datearray[k] = datearray[k].getMonth() + datearray[k].getDate();
             }
 
-            mousedate = datearray.indexOf(invertedx);
-            pro = d3.format(".1f")(d.values[mousedate].value);
+            var mousedate = datearray.indexOf(invertedx);
+            var pro = d3.format(".1f")(d.values[mousedate].value);
 
             d3.select(this)
                 .classed("hover", true)
@@ -229,11 +230,13 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
 
     d3.select(".chart")
         .on("mousemove", function () {
+            var mousex;
             mousex = d3.mouse(this);
             mousex = mousex[0] + 5;
             vertical.style("left", mousex + "px");
         })
         .on("mouseover", function () {
+            var mousex;
             mousex = d3.mouse(this);
             mousex = mousex[0] + 5;
             vertical.style("left", mousex + "px");
@@ -269,7 +272,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
                 d.value = +d.value;
             });
 
-            var layers = stack(nest.entries(data));  //define a new stack
+            var layers;
             var svg = d3.select(".chart").transition();
 
             // nest the data

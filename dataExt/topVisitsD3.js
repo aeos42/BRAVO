@@ -48,7 +48,7 @@ chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows, sort: "D
 	// Creates a scale for the x-axis based on Domain names
 	var xScale = d3.scale.ordinal()
 		.domain(dataset.map(function(d){return d.domain;}))
-		.rangeRoundBands([0, width], .1);
+		.rangeRoundBands([0, width], 0.1);
 
 	// Creates an axis based off the xScale properties
 	var xAxis = d3.svg.axis()
@@ -77,14 +77,14 @@ chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows, sort: "D
 				d3.select(this)
 					.classed("hover", true)
 				//attr("stroke", strokecolor)
-					.attr("stroke-width", "0.5px"), 
-						tooltip.html( "<p>" + d.domain + "-" + d.visits + " visits</p>" ).style("visibility", "visible");
+					.attr("stroke-width", "0.5px");
+				tooltip.html( "<p>" + d.domain + "-" + d.visits + " visits</p>" ).style("visibility", "visible");
 			})
 			
 			.on("mouseout", function(d,i) {
 				d3.select(this)
-					.attr("stroke-width", "0px"), 
-						tooltip.html( "<p>" + d.domain + "-" + d.visits+ " visits</p>" ).style("visibility", "hidden");
+					.attr("stroke-width", "0px");
+				tooltip.html( "<p>" + d.domain + "-" + d.visits+ " visits</p>" ).style("visibility", "hidden");
 		});
 
 	// Appends the yAxis

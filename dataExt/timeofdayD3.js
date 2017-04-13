@@ -14,13 +14,13 @@ chrome.runtime.sendMessage({greeting: "timeOfDayD3"}, function(response) {
 var data = response.timeSlot;
 console.log(response);
 // 	2. Display the scatterplot visualization using D3
-    var margin = {top: 20, right: 15, bottom: 60, left: 60}
-      , width = w - margin.left - margin.right
-      , height = h - margin.top - margin.bottom,
-      padding = -(margin.left+30);
+    var margin = {top: 20, right: 15, bottom: 60, left: 60};
+	var width = w - margin.left - margin.right;
+	var height = h - margin.top - margin.bottom;
+	var padding = -(margin.left+30);
     
     var x = d3.scale.linear()
-              .domain([0, d3.max(data, function(d) { return d.time})])
+              .domain([0, d3.max(data, function(d) { return d.time;})])
               .range([ 0, width ]);
     
     var y = d3.scale.linear()

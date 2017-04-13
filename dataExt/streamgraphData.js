@@ -8,8 +8,6 @@
  *  4. Process the final data set (sort, calculate dwell times, diagnostics
  *  5. Build alaSQL query results for D3 operations
  */
-//console logging
-var bkg = chrome.extension.getBackgroundPage();
 
 // ====== TopVisits parameters =======
 var topVisitsMaxDomains = 35;
@@ -52,7 +50,7 @@ var activeTraceMaxDomains = 100;
 var activeTraceMinWindow = 0.017;
 //============================================================
 
-var streamgraphSearchStartTime = (streamgraphNumDays === 0 ? 0 : (new Date).getTime() - (24 * 60 * 60 * 1000) * streamgraphNumDays);
+var streamgraphSearchStartTime = (streamgraphNumDays === 0 ? 0 : (new Date()).getTime() - (24 * 60 * 60 * 1000) * streamgraphNumDays);
 var queryStartTimeActiveTrace = (streamgraphNumDays === 0 ? 0 : msecSinceDay(activeTraceNumDays));
 
 //var searchStartTime = streamgraphSearchStartTime;
@@ -63,7 +61,7 @@ var testQuery = {pq: [], label: "visits"};
 var streamgraphDwell = {pq: [], label: "hours"};
 streamgraphDwell.query = function () {
     console.time("alaSQL streamgraph dwell query");
-    var pq4 = [], pq5 = [], pq6 = [];
+    var pq4, pq5, pq6;
     alasql("IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = 'topsites') DROP VIEW topsites");
 
     pq5 = alasql("CREATE VIEW topsites AS SELECT domain, SUM(dwellTime) AS [value] FROM ?" +
@@ -89,7 +87,7 @@ streamgraphDwell.query = function () {
 var streamgraphVisits = {pq: [], label: "visits"};
 streamgraphVisits.query = function () {
     console.time("alaSQL streamgraph visits query");
-    var pq4 = [], pq5 = [], pq6 = [];
+    var pq4, pq5, pq6;
     alasql("IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS " +
         "WHERE TABLE_NAME = 'topsites') DROP VIEW topsites");
 
@@ -115,7 +113,7 @@ streamgraphVisits.query = function () {
 var activeTrace = {hourdata: [], timestampdata: []};
 activeTrace.query = function () { 	//Active Trace Query
     console.time("alaSQL activeTrace query: ");
-    var pq2 = [], pq3 = [];
+    var pq2, pq3;
     alasql("IF EXISTS (SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS " +
         "WHERE TABLE_NAME = 'topsites') DROP VIEW topsites");
 
@@ -178,7 +176,6 @@ data.refresh = function() {
     //add 100 msec to last captured element
     var refreshStartTime = data.endTime() + 100;
     refreshChromeData(refreshStartTime);
-    var refreshEndTime = data.endTime();
 };
 //magic - how long did we linger?
 data.calculateDwell = function () {
@@ -197,8 +194,8 @@ data.calculateDwell = function () {
 data.calculateActiveTrace = function () {
     console.time("Calculate: ActiveTrace");
     var m = data[0].visitTime, m1 = timeOfDay(m), m2 = timeStamp(m), m3 = new Date(m);
-    var n, n1, n2, n3, i;
-    for (i = 0; i < data.length - 1; i++) {
+    var n, n1, n2, n3, i, len;
+    for (i = 0, len = data.length-1; i < len; i++) {
         n = data[i + 1].visitTime;
         n1 = timeOfDay(n);
         n2 = timeStamp(n);
@@ -222,7 +219,7 @@ data.calculateActiveTrace = function () {
 // Increment the rate count for each visit found (in timeslot array)
 data.calculateTimeOfDay = function () {
     console.time("Calculate: Time of Day");
-    var msec, val, i, index;
+    var msec, val, i, index, len;
     var d = new Date();
     //	2. Setup a list of timeslots {time: minutes_since_midnite, rate: 0) for (1440 / timeInterval) slots
     tod.timeSlot = [];
@@ -230,7 +227,7 @@ data.calculateTimeOfDay = function () {
         tod.timeSlot.push({time: (timeInterval * i), rate: 0});
     }
 
-    for (i = 0; i < data.length; i++) {
+    for (i = 0, len = data.length; i < len; i++) {
         msec = data[i].visitTime;
         d.setTime(msec - (msec % (60 * timeInterval * 1000)));
         val = d.getHours() * 60 + d.getMinutes();
@@ -285,18 +282,21 @@ refreshChromeData(searchStartTime);
 function refreshChromeData(stime) {
     var numRequestsOutstanding = 0;
     // h -  single record of returned history results
-    var h, i;
+    var h, i, len;
     console.time("Chrome history-search call");
     chrome.history.search({text: '', maxResults: 100000, startTime: stime},
         // For each history item, get details on all visits.
         function (historyItems) {
-            for (i = 0; i < historyItems.length; ++i) {
+            for (i=0, len=historyItems.length; i < len; ++i) {
                 h = historyItems[i];
+                processVisitsWithUrl(h);
+                /*
                 processVisitsWithUrl = function (hItem) {
                     return function (visitItems) {
                         processVisits(hItem, visitItems);
                     };
                 };
+                */
                 // now get corresponding visits for these history items
                 chrome.history.getVisits({url: h.url}, processVisitsWithUrl(h));
                 numRequestsOutstanding++;
@@ -305,10 +305,15 @@ function refreshChromeData(stime) {
             console.timeEnd("Chrome history-search call");
         });
 
+	var processVisitsWithUrl = function (hItem) {
+        return function (visitItems) {
+            processVisits(hItem, visitItems);
+        };
+    };
     // 	3. Augment any data items, 'join' history and visit data and push to data array
     var processVisits = function (h, visitItems) {
-        var i;
-        for (i = 0; i < visitItems.length; ++i) {
+        var i, len;
+        for (i = 0, len = visitItems.length; i < len; i++) {
             // build valid host name
             h.domain = urlDomain(h.url);
             //build short domain name
@@ -341,7 +346,7 @@ var onAllVisitsProcessed = function () {
 //========== Diagnostic Queries =================================
 function consoleQueryStats(q, raw, desc) {
     var i, avgCount;
-    var tmpq = [];
+    var tmpq;
     var maxCount = Math.max.apply(Math, q.map(function (o) {
         return o.value;
     }));
@@ -372,7 +377,7 @@ function diagQueries() {
     console.log("     Total hours:         ", t1);
     console.log("     Visits/hour:         ", t2);
     console.log(data);
-    var q1 = [], q2 = [], q3 = [], q4 = [], q5 = [], q6 = [], q7 = [], q8 = [], q9 = [];
+    var q1, q2, q3, q4, q5, q6, q7, q8, q9;
     q1 = alasql("SELECT * FROM ? GROUP BY url", [data]);
     console.log("\tUnique urls ", q1.length);
     q2 = alasql("SELECT * FROM ? GROUP BY domain", [data]);

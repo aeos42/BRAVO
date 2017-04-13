@@ -11,7 +11,6 @@
 
 var maxFont = 100;  
 var minFont = 30;
-var maxSize;	//used for scaling - future
 var w = 800;
 var h = 500;
 var maxDataRows = 30; 	//max words in the wordCloud
