@@ -5,7 +5,7 @@
 
 /* Overall strategy
  *  1. Send message to the listener on background page to send query data
- * 	2. Use alaSQL to select the top n, merged fields, counts and sorted final data 
+ * 	2. Use alaSQL to select the top n, merged fields, counts and sorted final data
  * 	3. Present the D3 bargraph visualization
  */
 var maxDataRows = 35;	//max number of domains to display
@@ -15,9 +15,10 @@ var numDays = 1;		//0 - all time, 1 - 1 day, 7 - 1 week, 30-30days, etc
 var strokecolor = "#000000";
 
 //  1. Send message to the listener on background page to send query data
-chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows, sort: "DESC", days: numDays}, function(response) {
+chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows,
+                            sort: "DESC", days: numDays}, function(response) {
 	var dataset = response.history;
-	console.log(dataset);
+	//console.log(dataset);
 
 // 	3. Present the D3 bargraph visualization
      // Dimensions for the chart: height, width, and space b/t the bars
@@ -35,7 +36,7 @@ chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows, sort: "D
 		.style("visibility", "hidden")
 		.style("top", "60px")
 		.style("left", "125px");
-    
+
 	var yScale = d3.scale.linear()
 		.domain([0, d3.max(dataset, function(d){return d.visits;})])
 		.range([height, 0]);
@@ -78,13 +79,13 @@ chrome.runtime.sendMessage({greeting: "topVisitsD3", rows: maxDataRows, sort: "D
 					.classed("hover", true)
 				//attr("stroke", strokecolor)
 					.attr("stroke-width", "0.5px");
-				tooltip.html( "<p>" + d.domain + "-" + d.visits + " visits</p>" ).style("visibility", "visible");
+				tooltip.html( "<p>" + d.domain + " - " + d.visits + " visits</p>" ).style("visibility", "visible");
 			})
-			
+
 			.on("mouseout", function(d,i) {
 				d3.select(this)
 					.attr("stroke-width", "0px");
-				tooltip.html( "<p>" + d.domain + "-" + d.visits+ " visits</p>" ).style("visibility", "hidden");
+				tooltip.html( "<p>" + d.domain +  " - " + d.visits+ " visits</p>" ).style("visibility", "hidden");
 		});
 
 	// Appends the yAxis

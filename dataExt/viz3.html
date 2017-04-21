@@ -12,18 +12,26 @@
         stroke: black;
         shape-rendering: crispEdges;
       }
-      
+
 </style>
   <head>
-    <title>BRAVO Visualization I</title>
     <script type=text/javascript src="https://d3js.org/d3.v3.js"></script>
   </head>
 
   <body>
-    <h1 style="font-family:verdana, monospace;">Visualization 3</h1>
-    <div class="main">
-      <p><span style = "font-size: 14px;" /span>Visits by time-of-day (15 min increments since midnite)</p>
-    </div>
+  <div class="title"></div>
+  <p
+  <label for="timeofday"
+         style="font-family: verdana,serif;
+                width: 900px;
+                margin-left: 0;
+                margin-right: 0;
+                font-size: 22px;
+                text-align: center">
+    Visits by Time of Day (15 min increments)
+  </label>
+  </p>
+  <div class="chart"></div>
     <script type="text/javascript" src="timeofdayD3.js">
     </script>
   </body>

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<meta charset="utf-8" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <style>
 
 body {
   font: 12px verdana;
 }
 
-.chart { 
+.chart {
   background: #fff;
 }
+
 
 p {
   font: 14px verdana;
@@ -24,15 +25,35 @@ p {
 
 button {
   position: absolute;
-  right: 50px;
-  top: 10px;
 }
 
 </style>
+
 <body>
 <script type=text/javascript src="https://d3js.org/d3.v3.js"></script>
+<div class="title"></div>
+<p
+  <label for="sgtitle"
+         style="font-family: verdana,serif;
+                width: 900px;
+                margin-left: 0;
+                margin-right: 0;
+                font-size: 22px;
+                text-align: center">
+         Top Domains by <span id="sgtitle-value"></span> per Day
+  </label>
+</p>
+<div class="chart"></div>
 
-
-<div class="chart">
-</div>
+<p>
+  <label for="nDomains"
+         style="display: inline-block;
+                width: 160px;
+                font-family: verdana,serif;
+                font-size: 12px;
+                text-align: right">
+         Top domains = <span id="nDomains-value"> </span>
+  </label>
+  <input type="range" min="1" max="100" id="nDomains">
+</p>
 <script type="text/javascript" src="streamgraphD3.js"></script>
