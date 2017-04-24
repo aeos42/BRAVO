@@ -1,39 +1,53 @@
 // D3 code is adapted from http://bl.ocks.org/WillTurman/4631136
-// D3 Interactive Streamgraph
 
 /* Overall strategy
  *  1. Send message to the listener on background page to send query data
  * 	2. Display the scatterplot visualization using D3
+ *  3. If slider is moved, then zero out data for last n datasets
+ *  4. If 'visit' or 'dwell' button is pressed, then do a data refresh
  */
 
 var w = 900;
-var h = 400;
+var h = 500;
 
 var datearray = [];
 var colorrange = [];
-//var data = [];
-var selectGraph = "visits";  //'visits' or 'dwell' for initial graph
-var retlabel, color;
+var currentStreamgraph = "Visits";  //'visits' or 'hours' are valid types
+var color;
 //  1. Send message to the listener on background page to send query data
-chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (response) {
-    var data = response.pq;
-    console.log("Data returned to streamgraphD3.js", data);
-    retlabel = response.label;
+chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, function (response) {
+    const STARTING_DOMAINS = 36;
+    const STARTING_TITLE = "Visits"
+    var data, rawData, numDays, maxDomains;
+    var sgtitle = {
+        title: currentStreamgraph,
+        update: function (v) {
+            this.title = v;
+            d3.select("#sgtitle-value").text(v);
+        }
+    };
+    var slider = {
+        val: STARTING_DOMAINS,
+        update: function (v) {
+            this.val = v;
+            d3.select("#nDomains-value").text(v);
+            d3.select("#nDomains").property("value", v);
+        }
+    };
+
+    data = response.pq;
+    rawData = data.slice();
+    numDays = response.numdays;
+    maxDomains = response.maxDomains;
+    slider.update(STARTING_DOMAINS);
+    sgtitle.update(currentStreamgraph);
+    //console.log("Data returned to streamgraphD3.js NumDays: ", numDays, data);
     color = "rainbow2";
-//	chart("rainbow2");
 
 //function chart(color) {
-    if (color === "blue") {
-        colorrange = ["#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6"];
-    }
-    else if (color === "pink") {
-        colorrange = ["#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#F1EEF6"];
-    }
-    else if (color === "orange") {
-        colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9"];
-    }
-    else if (color === "rainbow") {
-        colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9",
+    if (color === "rainbow") {
+        colorrange = [
+            "#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9",
             "#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#F1EEF6",
             "#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6",
             "#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9",
@@ -41,19 +55,20 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             "#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6"];
     }
     else if (color === "rainbow2") {
-        colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9",
-            "#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#660CFD",
-            "#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#660CFD",
-            "#7fc97f", "#ffff08", "#f0027f", "#bf5b17", "#02FE0D", "#e31a1c",
-            "#e41a1c", "#3ffeb8", "#4daf4a", "#984ea3", "#ff7f00", "#31a354",
-            "#8dd3c7", "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#b3de69"];
+        colorrange = [
+            "#ff004d", "#fe9400", "#ffff08", "#42fd04", "#00fffd", "#0c02ff",
+            "#ff02f9", "#ce97ff", "#fc4c02", "#fdbb03", "#44fd01", "#06fedc",
+            "#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#6620FD",
+            "#045A8D", "#2B8CBE", "#4daf4a", "#dbff02", "#43baff", "#6622FD",
+            "#7fc97f", "#74A9CF", "#f0027f", "#bf5b17", "#02FE0D", "#fffaa2",
+            "#8dd3c7", "#ffffb3", "#8d8bff", "#fb8072", "#80b1d3", "#b3de69"];
     }
 
     var strokecolor = "#000000";
     var format = d3.time.format("%m/%d/%y");
 
 //set dimensions of canvas/graph
-    var margin = {top: 20, right: 40, bottom: 30, left: 30};
+    var margin = {top: 10, right: 40, bottom: 30, left: 30};
     var padding = 10;
     var width = w - margin.left - margin.right - padding;
     var height = h - margin.top - margin.bottom;
@@ -65,8 +80,14 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
         .style("position", "absolute")
         .style("z-index", "20")
         .style("visibility", "hidden")
-        .style("top", "0px")
+        .style("top", (margin.top + 15).toString() + "px")
         .style("left", "55px");
+
+//title
+    var title = d3.select("title")
+        .append("div")
+        .style("top", "0px")
+        .style("left", "100px");
 
 //set the ranges
     var x = d3.time.scale()
@@ -156,7 +177,6 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             return z(i);
         });
 
-
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -181,7 +201,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
                 });
         })
 
-        .on("mousemove", function (d, i) {
+        .on("mousemove", function (d) {
             var mousex;
             mousex = d3.mouse(this);
             mousex = mousex[0];
@@ -194,17 +214,17 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             }
 
             var mousedate = datearray.indexOf(invertedx);
-            var pro = d3.format(".1f")(d.values[mousedate].value);
+            var val = d3.format(".1f")(d.values[mousedate].value);
 
             d3.select(this)
                 .classed("hover", true)
                 .attr("stroke", strokecolor)
                 .attr("stroke-width", "0.5px");
-            tooltip.html("<p>" + d.key + "<br>" + pro + " " + retlabel + "</p>")
-                    .style("visibility", "visible");
+            tooltip.html("<p>" + d.key + "<br>" + val + " " + currentStreamgraph + "</p>")
+                .style("visibility", "visible");
 
         })
-        .on("mouseout", function (d, i) {
+        .on("mouseout", function () {
             svg.selectAll(".layer")
                 .transition()
                 .duration(250)
@@ -212,8 +232,8 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
             d3.select(this)
                 .classed("hover", false)
                 .attr("stroke-width", "0px");
-            tooltip.html("<p>" + d.key + "<br>" + pro + "</p>")
-                    .style("visibility", "hidden");
+            tooltip.html("")
+                .style("visibility", "hidden");
         });
 
     // vertical bar
@@ -223,8 +243,8 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
         .style("position", "absolute")
         .style("z-index", "19")
         .style("width", "2px")
-        .style("height", (h - 60).toString() + "px")
-        .style("top", "35px")
+        .style("height", (h - 50).toString() + "px")
+        .style("top", (margin.top + 70).toString() + "px")
         .style("left", "0px")
         .style("background", "#999");  //was fff
 
@@ -246,37 +266,47 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
     d3.select(".chart")
         .append("button")
         .text("Dwell Time")
-        .style("left", "400px")
-        .style("top", "10px")
+        .style("left", "420px")
+        .style("top", (h + margin.bottom + margin.top + 55).toString() + "px")
         .on("click", function () {
-            return updateChart("dwell");
+            currentStreamgraph = "Hours";
+            sgtitle.update(currentStreamgraph);
+            return updateData(currentStreamgraph, slider.val);
         });
 
     d3.select(".chart")
         .append("button")
         .text("Visits")
-        .style("left", "300px")
-        .style("top", "10px")
+        .style("left", "360px")
+        .style("top", (h + margin.bottom + margin.top + 55).toString() + "px")
         .on("click", function () {
-            return updateChart("visit");
+            currentStreamgraph = "Visits";
+            sgtitle.update(currentStreamgraph);
+            return updateData(currentStreamgraph, slider.val);
         });
 
-    function updateChart(charttype) {
+    // when the input range changes update the displayed domains
+    d3.select("#nDomains").on("input", function () {
+        //data = zeroOut(rawData, +this.value);
+        updateData(currentStreamgraph, +this.value);
+        slider.update(+this.value);
+    });
+
+    function updateData(charttype, numdomains) {
         //request the new data
         chrome.runtime.sendMessage({greeting: "viz5D3", graph: charttype}, function (response) {
-            data = response.pq;
-            retlabel = response.label;
-
+            rawData = response.pq;
+            slider.update(numdomains);
+            data = zeroOut(rawData, numdomains);
             data.forEach(function (d) {
                 d.date = format.parse(d.date);
                 d.value = +d.value;
             });
 
-            var layers;
             var svg = d3.select(".chart").transition();
 
             // nest the data
-            layers = stack(nest.entries(data));  //bug - need to wipe out existing data
+            var layers = stack(nest.entries(data));
 
             // Scale the range of the data again
             x.domain(d3.extent(data, function (d) {
@@ -309,4 +339,14 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: selectGraph}, function (r
         });
     }
 
+    // returns a copy of d with values in last n domains zeroed out
+    function zeroOut(d, marker) {
+        var dCopy = d.slice();
+        for (var i = marker * (numDays + 1); i < dCopy.length; i++) {
+            dCopy[i].value = 0;
+        }
+        return dCopy;
+    }
 });
+
+

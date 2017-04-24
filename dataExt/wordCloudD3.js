@@ -9,7 +9,7 @@
  * 	3. Display the wordCloud
  */
 
-var maxFont = 100;  
+var maxFont = 100;
 var minFont = 30;
 var w = 800;
 var h = 500;
@@ -17,11 +17,11 @@ var maxDataRows = 30; 	//max words in the wordCloud
 var numDays = 0;		//0 - all time, 1 - 1 day, 7 - 1 week, 30-30days, etc
 
 //  1. Get the data from listener running on the background page
-chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "DESC", days: numDays}, 
-	function(response) {
-	var frequencyList = response.wordList;
+chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "DESC", days: numDays},
+    function(response) {
+    var frequencyList = response.wordList;
 	var i;
-console.log(frequencyList);
+    //console.log(frequencyList);
 // 2. Scale the fontsize for the wordCloud
 	var maxSize = Math.max.apply(Math,frequencyList.map(function(o){return o.size;}));
 	var minSize = Math.min.apply(Math,frequencyList.map(function(o){return o.size;}));
