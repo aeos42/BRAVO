@@ -68,7 +68,7 @@ As a user, I want time management goals created from my data so that I can use m
 *Agile size: 64*
 
 ___
-## Methodology
+### Methodology
 *Agile*
 ___
 ### Project Tracking Software
