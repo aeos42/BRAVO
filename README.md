@@ -1,43 +1,43 @@
 # BRAVO
-#
-<h2>A chrome extension that visualizes your browser history data.</h2>
-<h3>Who:</h3>
+
+## A chrome extension that visualizes your browser history data.
+### Who
 |Name             |GitHub Usernames|
-|:-----------------:|:----------------:|
+|:---------------:|:----------------:|
 |Adam Siefkas     |aeos42          |
 |Julia Heil       |jheil           |
 |Ryan Burt        |burt1215        |
 |Matilda Whitemore|matilda-may     |
 |Austin Baysinger |a-baysinger     |
 
-<h3>Title:</h3>
-_**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n_
-___
-<h3>Description:</h3>
+### Title
+**BRAVO** - **BR**owser **A**nalytics **V**isualizati**O**n
+____
+### Description
 We plan on building a Chrome Extension that visualizes interesting and usable data from one's browsing history. These visualizations can be interacted with based on user preference (i.e. bar graph, pie chart, etc.) and will constantly gain more data as long as the extension is enabled and the user is active. D3.js is the visualization tool that will be used to produce the statistics and graphics needed.   
 ___
-<h3>Vision Statement:</h3> 
+### Vision Statement
 *Gain insights into your browsing habits.*
 ___
-<h3>Motivation:</h3>
+### Motivation
 * In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 * Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
 * There are also many interesting social understandings that can be pulled from browsing data which would make BRAVO a desirable tool for sociologists.
 
 ___
-<h3>Risks:</h3>
+### Risks
 * Unsure of the difficulty level in regards to Chrome built-in extensions and handling API.
 * Unknown language for some members: Javascript.
 * Introduction to learning D3.js, a data visualization tool which only two members have experience in.
 
 ___
-<h3>Mitigation strategy for dealing with the risks:</h3>
+### Mitigation Strategy
 * Create a functioning skeleton that can produce a simple visualization, even if it’s a two-point dataset. 
 * The sooner we get that done, the easier it will be to apply more complex changes.  
 
 ___
-<h3>User stories:</h3>
-<h6>Agile scale used: Powers of 2 from 0 to 64</h6>
+### User Stories
+###### Agile scale used: Powers of 2 from 0 to 64
 
 * __*ID: 001*__<br>
 As a Google user, I want to see the division of time spent on different websites so that I can view my habits out of curiosity.<br> 
@@ -68,11 +68,11 @@ As a user, I want time management goals created from my data so that I can use m
 *Agile size: 64*
 
 ___
-<h3>Methodology:</h3>
+## Methodology
 *Agile*
 ___
-<h3>Project Tracking software:</h3>
+### Project Tracking Software
 [Trello](https://trello.com/b/okK7Ozfy/historyviz)
 ____
-<h3>Project Plan:</h3>
+### Project Plan
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
