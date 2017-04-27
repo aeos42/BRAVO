@@ -24,8 +24,7 @@
     "downloads",  // if we extend to downloads
     "topSites",
     "storage",
-    "unlimitedStorage",
-    "background"
+    "unlimitedStorage"
    ],
   "background": {"scripts": [ "listen.js", "alasql.min.js", "streamgraphData.js"]},
     "content_security_policy": "script-src 'self' https://d3js.org/d3.v3.js https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js 'unsafe-eval'; object-src 'self'"

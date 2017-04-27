@@ -1,23 +1,35 @@
-// D3 code is adapted from http://bl.ocks.org/ericcoopey/6382449
-// Coopey's Block 6382449
-// Using AlaSQL for queries - http://alasql.org/
-// test with https://jsfiddle.net/jheil/s6onp5jc/
-
-/* Overall strategy
- *  1. Get the data from listener running on the background page
- *  3. Scale the fontsize for the wordCloud
- * 	3. Display the wordCloud
+/**
+ * @author Julia Heil
+ * @fileOverview Display wordCloud of domains based on frequency of visits
+ * <pre>
+ *        Uses a chrome history API to retrieve data
+ *        Data is gathered by {@link streamgraphData.js} at extension load, and
+ *            then incrementally when this page loads/
+ *        Data is based on vists during the last {@link STREAMGRAPH_NUMDAYS} days
+ *        If set to 0, then data for entire chrome history file will be displayed.
+ *        Data for {@link WORDCLOUD_MAX_DOMAINS} is pulled into D3 chart.
+ *
+ * Overall strategy
+ *  1. Send message to the listener on background page to send query data
+ *  2. Display a wordcloud based on the top domains visited during the selected period
+ *  3. Scale the fontsize based on word frequency
+ *
+ * Graph visual:
+ * </pre>
+ * <img src="./wordCloud.png">
+ * <pre>
+ * See {@link wordCloud}  for data format
+ * </pre>
+ * @see adapted from Coopeys Block {@link http://bl.ocks.org/ericcoopey/6382449}
  */
 
 var maxFont = 100;
 var minFont = 30;
 var w = 800;
 var h = 500;
-var maxDataRows = 30; 	//max words in the wordCloud
-var numDays = 0;		//0 - all time, 1 - 1 day, 7 - 1 week, 30-30days, etc
-
 //  1. Get the data from listener running on the background page
-chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "DESC", days: numDays},
+//chrome.runtime.sendMessage({greeting: "wordCloudD3", rows: maxDataRows, sort: "DESC", days: numDays},
+chrome.runtime.sendMessage({greeting: "wordCloudD3"},
     function(response) {
     var frequencyList = response.wordList;
 	var i;

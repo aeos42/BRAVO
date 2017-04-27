@@ -1,94 +1,86 @@
-// D3 code is adapted from http://bl.ocks.org/ericcoopey/6382449
-// Coopey's Block 6382449
-// https://bl.ocks.org/mbostock/d8bcc4b130df420d6c40
+/**
+ * @author Julia Heil
+ * @fileOverview Display time-of-day chart for user's chrome history - daily visits by domain.
+ * <pre>
+ *        Uses a chrome history API to retrieve data
+ *        Data is gathered by {@link streamgraphData.js} at extension load, and
+ *            then incrementally when this page loads/
+ *        Displays visits for all entire {@link STREAMGRAPH_NUMDAYS} as if they occured in a single day
+ *        If set to 0, then data for entire chrome history file will be displayed.
+ *        Data for {@link TOPVISITS_MAX_DOMAINS} is pulled into D3 chart.
+ *        Data is collected in {@link TOD_TIMEINTERVAL) buckets (e.g. 15 = 15 minutes)
+ *
+ * Overall strategy
+ *  1. Send message to the listener on background page to send query data
+ *  2. Display the Visits by Time of Day visualization using D3
+ *  3. Hovering over a bar will diplay exact number of visits in a tooltip box
+ *
+ * Graph visual:
+ * </pre>
+ * <img src="./tod.png">
+ * <pre>
+ * See {@link tod}  for data format - use tod.timeofday data element
+ * </pre>
+ * @see adapted from Michael Bostocks Block {@link https://bl.ocks.org/mbostock/d8bcc4b130df420d6c40}
+ */
 
-// Overall strategy
-//  1. Send message to the listener on background page to send query data
-// 	2. Display the scatterplot visualization using D3
 var w = 800;
 var h = 500;
 
 //  1. Send message to the listener on background page to send query data
 chrome.runtime.sendMessage({greeting: "timeOfDayD3"}, function (response) {
+    var parseTime = d3.time.format.utc("%H:%M").parse,
+        midnight = parseTime("00:00");
     var data = response.timeSlot;
-//console.log(response);
+    data.forEach(function(d) {
+        d.rate = +d.rate;
+        d.time = parseTime(d.time);
+    });
+    console.log(response);
 // 	2. Display the scatterplot visualization using D3
-    var margin = {top: 20, right: 15, bottom: 60, left: 60};
+    var margin = {top: 20, right: 30, bottom: 60, left: 60};
     var width = w - margin.left - margin.right;
     var height = h - margin.top - margin.bottom;
     var padding = -(margin.left + 30);
 
-    var x = d3.scale.linear()
-        .domain([0, d3.max(data, function (d) {
-            return d.time;
-        })])
+    var x = d3.time.scale.utc()
+        .domain([midnight, d3.time.day.utc.offset(midnight, 1)])
         .range([0, width]);
 
     var y = d3.scale.linear()
-        .domain([0, d3.max(data, function (d) {
-            return d.rate;
-        })])
         .range([height, 0]);
 
-    var chart = d3.select('body')
-        .append('svg:svg')
-        .attr('width', width + margin.right + margin.left)
-        .attr('height', height + margin.top + margin.bottom)
-        .attr('class', 'chart');
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var main = chart.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('class', 'main');
+        y.domain([0, d3.max(data, function(d) { return d.rate; })]);
 
-    // draw the x axis
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient('bottom');
+        svg.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+                .tickFormat(d3.time.format.utc("%I %p")));
 
-    chart.append("text")
-        .attr("class", "x label")
-        .attr("text-anchor", "end")
-        .attr("x", (width + margin.left + margin.right) / 2 + margin.left)
-        .attr("y", height + 60)
-        .text("Minutes Since Midnight");
+        svg.append("g")
+            .attr("class", "dots")
+            .selectAll("path")
+            .data(data)
+            .enter().append("path")
+            .attr("transform", function(d) { return "translate(" + x(d.time) + "," + y(d.rate) + ")"; })
+            .attr("d", d3.svg.symbol()
+                .size(40));
 
-    main.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .attr('class', 'main axis date')
-        .call(xAxis);
+        var tick = svg.append("g")
+            .attr("class", "axis axis--y")
+            .call(d3.svg.axis()
+                .scale(y)
+                .tickSize(-width)
+                .orient("left"))
+            .select(".tick:last-of-type");
 
-    // draw the y axis
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient('left');
-
-    main.append('g')
-        .attr('transform', 'translate(0,0)')
-        .attr('class', 'axis')
-        .call(yAxis);
-
-    var g = main.append("svg:g");
-
-    g.selectAll("scatter-dots")
-        .data(data)
-        .enter().append("svg:circle")
-        .attr("cx", function (d, i) {
-            return x(d.time);
-        })
-        .attr("cy", function (d) {
-            return y(d.rate);
-        })
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 2.0)
-        .attr("r", 3.5);
-
-
-    main.append("text")
-        .attr("text-anchor", "middle")
-        // text is drawn off the screen top left, move down and out and rotate
-        .attr("transform", "translate(" + (padding / 2) + "," + (height / 2) + ")rotate(-90)")
-        .text("Visits");
 });
