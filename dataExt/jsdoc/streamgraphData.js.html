@@ -1,7 +1,35 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: streamgraphData.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: streamgraphData.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @author Julia Heil
  * @fileOverview Retrieve user's chrome history and search details and process into JSON objects for D3 charts
- * <pre>
+ * &lt;pre>
  *        Uses a chrome history API to retrieve data
  *        Uses alaSQL (in-memory SQL DB) to process the data for D3 usage
  *
@@ -14,22 +42,22 @@
  *    5. Build alaSQL query results for D3 operations
  *
  * See {@link streamgraphD3.js} visualization
- * </pre>
+ * &lt;/pre>
  * Entity diagram from Chrome History API (by examing schema in History file with sqlite3)
- * <img src="./chromeER.png">
- * <pre>
+ * &lt;img src="./chromeER.png">
+ * &lt;pre>
  * Core API history strategy was based on mechanism used here:
- * </pre>
+ * &lt;/pre>
  * @see Chrome History API: {@link https://developer.chrome.com/extensions/history}
- * @see Chrome History search & visits methods: {@link https://developer.chrome.com/extensions/history#method-getVisits}
+ * @see Chrome History search &amp; visits methods: {@link https://developer.chrome.com/extensions/history#method-getVisits}
  * @see alaSQL Overview: {@link http://alasql.org/}
  */
 
 /**
- * <pre>
+ * &lt;pre>
  * Chrome API will allow a 'limit' on total record extracted, independent of Query - have not hit yet with any
  * real user data.  Will adjust if queries or API search are no longer subsecond
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
@@ -58,33 +86,33 @@ const WORDCLOUD_MAX_DOMAINS = 30;
 const TOD_TIMEINTERVAL = 15;
 // ====== streamgraph parameters ======
 /**
- * <pre>
+ * &lt;pre>
  * Maximum number days of history to include in D3 streamgraph
  *    0 - all history, otherwise number of days of history
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
 const STREAMGRAPH_NUMDAYS = 30;
 /**
- * <pre>
+ * &lt;pre>
  * Maximum number domains to include in D3 streamgraph. Minimum value is 1.
  *    Domains are ranked and included by:
  *           - total visits over time period selected
  *           - total dwell time over time period selected
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
 const STREAMGRAPH_MAX_DOMAINS = 100;
 /**
- * <pre>
+ * &lt;pre>
  * Maximum amount of Dwell time allowed for any visit
  *   Dwell time is 'computed', since it is not available in chrome history API
  *   Dwell is calculated as min(MAX_DWELL_HOURS, time (in hours) from the start of the current visit
  *   until the start of the next visit.  In order to approximate what a user might see, this limit
  *   is used.  The user could leave their computer, go to sleep, turn their computer off, etc.
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
@@ -92,35 +120,35 @@ const MAX_DWELL_HOURS = 4;
 // ==== Active trace testing variables ===========================
 const ACTIVETRACE_MAX_DATA_ITEMS = 100000;
 /**
- * <pre>
+ * &lt;pre>
  * Number of days included in the ActiveTrace query.  This will return whole days of info  -
  * and up to the current time for today.  All time is computed in local time.
  * Example: you select 1, a partial day of data is returned and the last start time
  * will be a few milliseconds from when the quey bagan.
  * IMPORTANT: the end-time for ActiveTrace to be 23:59 if the end time goes into the next calendar day.
  * This enforces a rule that start time is always the same or less than the end time.
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
 const ACTIVE_TRACE_NUMDAYS = 1;
 /**
- * <pre>
+ * &lt;pre>
  * Maximum number domains to include in D3 streamgraph. Minimum value is 1.
  * Domains are ranked and included by:
  *   - total dwell time over time period selected
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
 const ACTIVE_TRACE_MAX_DOMAINS = 35;
 /**
- * <pre>
+ * &lt;pre>
  * The smallest window of time that is returned in the ActiveTrace queries.
  * measured in hours i.e .0833 = 5 min .01667 = 1 min
  * if you use 0 you will see windows where start time and end times are
  * identical (because a visit lasted for only seconds)
- * </pre>
+ * &lt;/pre>
  * @const
  * @default
  */
@@ -142,17 +170,17 @@ const ACTIVE_TRACE_MIN_WINDOW = 0.00167;  //.0167 = 1 min
 /**
  * @function getStreamgraphDwell()
  * @return {streamgraphDwell}
- *<pre>
+ *&lt;pre>
  * Returns JSON Object for streamgraphDwell D3 graph
  * example {date: "03/25/17", key: "mail.google.com", rank: 1, value: 3.1751861225721574}
  * For each key, There is ONE and ONLY one object for every date within the specified date range.
- *</pre>
+ *&lt;/pre>
  */
 function getStreamgraphDwell() {
     var streamgraphDwell = {pq: [], numdays: STREAMGRAPH_NUMDAYS, maxDomains: STREAMGRAPH_MAX_DOMAINS};
     console.time("alaSQL streamgraph dwell query");
     var pq6 = alasql("SELECT domain, SUM(dwellTime) AS [value], ROWNUM() AS rank FROM ? " +
-        //   "WHERE (LENGTH(shortDomain) <= 30) " +
+        //   "WHERE (LENGTH(shortDomain) &lt;= 30) " +
         "GROUP BY domain ORDER BY [value] DESC LIMIT " + STREAMGRAPH_MAX_DOMAINS.toString(), [chromedata]);
 
     var pq4 = alasql("SELECT t1.domain as [key], t1.rank, SUM(t2.dwellTime) AS [value], t2.dateStamp AS date " +
@@ -161,7 +189,7 @@ function getStreamgraphDwell() {
 
     //consoleQueryStats(pq4, chromedata, "Dwell Time BY Top N domains, date");
     //make sure we have a value for every date
-    for (var i = 0, len = pq6.length; i < len; i++) {
+    for (var i = 0, len = pq6.length; i &lt; len; i++) {
         fillGaps(pq4, Math.max(streamgraphSearchStartTime, chromedata.startTime()),
             chromedata.endTime(), pq6[i].domain, pq6[i].rank);
     }
@@ -188,11 +216,11 @@ function getStreamgraphDwell() {
 /**
  * @function getStreamgraphVisits()
  * @return {streamgraphVisits}
- * <pre>
+ * &lt;pre>
  * Returns JSON Object for streamgraphVisits D3 graph
  * example {date: "03/25/17", key: "mail.google.com", rank: 1, value: 125}
  * For each key, There is ONE and ONLY one object for every date within the specified date range.
- * </pre>
+ * &lt;/pre>
  */
 function getStreamgraphVisits() {
     var streamgraphVisits = {pq: [], numdays: STREAMGRAPH_NUMDAYS, maxDomains: STREAMGRAPH_MAX_DOMAINS};
@@ -205,7 +233,7 @@ function getStreamgraphVisits() {
         "GROUP by domain, rank, t2.dateStamp", [pq6, chromedata]);
 
     //consoleQueryStats(pq4, chromedata, "Visit count BY Top N domains, date");
-    for (var i = 0, len = pq6.length; i < len; i++) {
+    for (var i = 0, len = pq6.length; i &lt; len; i++) {
         fillGaps(pq4, Math.max(streamgraphSearchStartTime, chromedata.startTime()),
             chromedata.endTime(), pq6[i].domain, pq6[i].rank);
     }
@@ -245,9 +273,9 @@ function getStreamgraphVisits() {
 /**
  * @function getActiveTrace()
  * @return {activeTrace}
- * <pre>
+ * &lt;pre>
  *     Returns a JSON object for the ActiveTrace D3 chart
- * </pre>
+ * &lt;/pre>
  */
 function getActiveTrace() {
     var activeTrace = {hourdata: [], timestampdata: [], chrometimedata: []};
@@ -300,7 +328,7 @@ function getActiveTrace() {
 /**
  * @function getTod()
  * @return {tod}
- * <pre>
+ * &lt;pre>
  * Returns JSON Object for use by both timeofday and heatmap D3 graphs
  * heatmap example: {day: 1, hour:14, rate: 234}  - Sunday, between 13:00-14:00, 234 cumulative visits
  * timeofday example: {timeindex: 10, rate: 34, time: 13:34} 4th 15 min slot , 34 visits in that slot, startime: 00:02}
@@ -308,7 +336,7 @@ function getActiveTrace() {
  * TOD_TIMEINTERVAL minutes in a single 24 hour day.
  * For heatmap - Visits are accumated by day of week (1-Monday,...7-Sunday) and by ending hour time slot (1-24)
  * Data is returned in  JSON format.  Data from ALL domains is included.
- * </pre>
+ * &lt;/pre>
  */
 function getTod() {
     //timeOfDay return data
@@ -321,18 +349,18 @@ function getTod() {
     //var timezone = 8;
     //  2. Setup a list of timeslots {time: minutes_since_midnite, rate: 0) for (1440 / TOD_TIMEINTERVAL) slots
     tod.timeSlot = [];
-    for (i = 0; i < (60 * 24) / TOD_TIMEINTERVAL; i++) {
+    for (i = 0; i &lt; (60 * 24) / TOD_TIMEINTERVAL; i++) {
         tod.timeSlot.push({timeindex: (TOD_TIMEINTERVAL * i),  rate: 0,
                            time: timeOfDay((i+tzo*60/TOD_TIMEINTERVAL)*TOD_TIMEINTERVAL*60*1000)});
         //console.log(i, TOD_TIMEINTERVAL*i, timeOfDay((i+tzo*60/TOD_TIMEINTERVAL)*TOD_TIMEINTERVAL*60*1000));
     }
     top.heatmap=[];
-    for (var day =1; day<=7; day++) {
-        for (var hour=1; hour<=24; hour++) {
+    for (var day =1; day&lt;=7; day++) {
+        for (var hour=1; hour&lt;=24; hour++) {
             tod.heatmap.push(({day: day, hour:hour, rate:0}));
         }
     }
-    for (i = 0, len = chromedata.length; i < len; i++) {
+    for (i = 0, len = chromedata.length; i &lt; len; i++) {
         msec = chromedata[i].visitTime;
         d.setTime(msec - (msec % (60 * TOD_TIMEINTERVAL * 1000)));
         val = d.getHours() * 60 + d.getMinutes();
@@ -362,11 +390,11 @@ function getTod() {
 /**
  * @function getWordCloud()
  * @return {wordCloud}
- * <pre>
+ * &lt;pre>
  * Returns JSON Object for wordCloud D3 graph
  * example {text: "github", size: 132}
  * Return the count (size) of the top {@link WORDCLOUD_MAX_DOMAINS} domains
- * </pre>
+ * &lt;/pre>
  */
 function getWordCloud() {
     // WordCloud return data
@@ -392,11 +420,11 @@ function getWordCloud() {
 /**
  * @function getTopVisits()
  * @return {topvisits}
- * <pre>
+ * &lt;pre>
  * Returns JSON Object for topVisits D3 graph
  * example {text: "github", size: 132}
  * Return the count (size) of the top {@link TOPVISITS_MAX_DOMAINS} domains
- * </pre>
+ * &lt;/pre>
  */
 function getTopVisits() {
     var topVisits = {history: []};
@@ -449,7 +477,7 @@ chromedata.activeTraceCalc = function () {
     //console.time("Calculate: ActiveTrace");
     var m = chromedata.startTime(), m1 = timeOfDay(m), m2 = timeStamp(m), m3 = new Date(m);
     var n, n1, n2, n3, i, len;
-    for (i = 0, len = chromedata.length - 1; i < len; i++) {
+    for (i = 0, len = chromedata.length - 1; i &lt; len; i++) {
         n = chromedata[i + 1].visitTime;
         n1 = timeOfDay(n);
         n2 = timeStamp(n);
@@ -473,7 +501,7 @@ chromedata.activeTraceCalc = function () {
 chromedata.streamgraphDwellCalc = function () { //magic - how long did we linger?
     var i, dwell, len;
     //console.time("Calculate: dwell");
-    for (i = 0, len = chromedata.length - 1; i < len; i++) {
+    for (i = 0, len = chromedata.length - 1; i &lt; len; i++) {
         dwell = chromedata[i + 1].visitTime - chromedata[i].visitTime;
         //this is stored as hours
         chromedata[i].dwellTime = Math.min(MAX_DWELL_HOURS, dwell / 3600 / 1000);
@@ -522,7 +550,7 @@ function refreshChromeData(stime) {
     chrome.history.search({text: "", maxResults: CHROME_MAX_DATA_ITEMS, startTime: stime},
         // For each history item, get details on all visits.
         function (historyItems) {
-            for (i = 0, len = historyItems.length; i < len; ++i) {
+            for (i = 0, len = historyItems.length; i &lt; len; ++i) {
                 h = historyItems[i];
                 processVisitsWithUrl(h);
                 /*
@@ -547,14 +575,14 @@ function refreshChromeData(stime) {
     };
     // 3. Augment any data items, 'join' history and visit data and push to data array
     var processVisits = function (h, visitItems) {
-        for (i = 0, len = visitItems.length; i < len; i++) {
+        for (i = 0, len = visitItems.length; i &lt; len; i++) {
             // build valid host name
             h.domain = urlDomain(h.url);
             //build short domain name
             h.shortDomain = prettyDomain(h.domain);
             visitItems[i].dateStamp = dateStamp(visitItems[i].visitTime);
-            if ((h.shortDomain.length <= 30) &&
-                (visitItems[i].visitTime >= stime) &&
+            if ((h.shortDomain.length &lt;= 30) &amp;&amp;
+                (visitItems[i].visitTime >= stime) &amp;&amp;
                 (h.shortDomain.length > 0)) {
                 chromedata.push(extend(visitItems[i], h));
             }
@@ -587,7 +615,7 @@ function consoleQueryStats(q, raw, desc) {
         return o.value;
     }));
     var totCount = 0;
-    for (i = 0; i < q.length; i++) {
+    for (i = 0; i &lt; q.length; i++) {
         totCount += q[i].value;
     }
     avgCount = totCount / q.length;
@@ -624,12 +652,12 @@ function diagQueries() {
     q5 = alasql("SELECT * FROM ? WHERE transition = 'typed' GROUP BY shortDomain", [chromedata]);
     console.log("\tUnique transition 'typed' grouped by shortDomain", q5.length);
     q6 = alasql("SELECT transition, COUNT(visitCount) AS total FROM ?  GROUP BY transition", [chromedata]);
-    for (i = 0; i < q6.length; i++) {
+    for (i = 0; i &lt; q6.length; i++) {
         console.log("\tTransition type:", q6[i]);
     }
     q7 = alasql("SELECT * FROM ? ORDER by dwellTime DESC", [chromedata]);
     console.log("\tDwell Times Max hours: ", (q7[0].dwellTime).toFixed(0));
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i &lt; 10; i++) {
         console.log("\t\tDwelltimes:", q7[i].domain, ":", (q7[i].dwellTime).toFixed(4), "hours");
     }
     console.log(q7);
@@ -643,7 +671,7 @@ function diagQueries() {
 //======== HELPER FUNCTIONS =======================
 function fillGaps(q, start, end, name, rank) {
     var t = new Date(start);
-    while (t <= end + (24 * 60 * 60 * 1000)) {
+    while (t &lt;= end + (24 * 60 * 60 * 1000)) {
         q.push({"date": dateStamp(t), "key": name, "value": 0, "rank": rank});
         t.setDate(t.getDate() + 1);
     }
@@ -665,11 +693,11 @@ function timeStamp(dateVal) {
     var t = new Date(dateVal);
     var date = [t.getMonth() + 1, t.getDate(), t.getFullYear()];
     var time = [t.getHours(), t.getMinutes(), t.getSeconds()];
-    var suffix = ( time[0] < 12 ) ? "AM" : "PM";
-    time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+    var suffix = ( time[0] &lt; 12 ) ? "AM" : "PM";
+    time[0] = ( time[0] &lt; 12 ) ? time[0] : time[0] - 12;
     time[0] = time[0] || 12;
-    for (i = 1; i < 3; i++) {
-        if (time[i] < 10) {
+    for (i = 1; i &lt; 3; i++) {
+        if (time[i] &lt; 10) {
             time[i] = "0" + time[i];
         }
     }
@@ -681,8 +709,8 @@ function timeOfDay(dateVal) {
     var i;
     var t = new Date(dateVal);
     var time = [t.getHours(), t.getMinutes()];
-    for (i = 1; i < 2; i++) {
-        if (time[i] < 10) {
+    for (i = 1; i &lt; 2; i++) {
+        if (time[i] &lt; 10) {
             time[i] = "0" + time[i];
         }
     }
@@ -693,8 +721,8 @@ function dateStamp(dateVal) {
     var i;
     var t = new Date(dateVal);
     var date = [t.getMonth() + 1, t.getDate(), t.getFullYear() - 2000];
-    for (i = 0; i < 2; i++) {
-        if (date[i] < 10) {
+    for (i = 0; i &lt; 2; i++) {
+        if (date[i] &lt; 10) {
             date[i] = "0" + date[i];
         }
     }
@@ -862,3 +890,26 @@ testQuery.pq = [
 
 
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ACTIVE_TRACE_MAX_DOMAINS">ACTIVE_TRACE_MAX_DOMAINS</a></li><li><a href="global.html#ACTIVE_TRACE_MIN_WINDOW">ACTIVE_TRACE_MIN_WINDOW</a></li><li><a href="global.html#ACTIVE_TRACE_NUMDAYS">ACTIVE_TRACE_NUMDAYS</a></li><li><a href="global.html#CHROME_MAX_DATA_ITEMS">CHROME_MAX_DATA_ITEMS</a></li><li><a href="global.html#getActiveTrace()">getActiveTrace()</a></li><li><a href="global.html#getStreamgraphDwell()">getStreamgraphDwell()</a></li><li><a href="global.html#getStreamgraphVisits()">getStreamgraphVisits()</a></li><li><a href="global.html#getTod()">getTod()</a></li><li><a href="global.html#getTopVisits()">getTopVisits()</a></li><li><a href="global.html#getWordCloud()">getWordCloud()</a></li><li><a href="global.html#MAX_DWELL_HOURS">MAX_DWELL_HOURS</a></li><li><a href="global.html#STREAMGRAPH_MAX_DOMAINS">STREAMGRAPH_MAX_DOMAINS</a></li><li><a href="global.html#STREAMGRAPH_NUMDAYS">STREAMGRAPH_NUMDAYS</a></li><li><a href="global.html#TOD_TIMEINTERVAL">TOD_TIMEINTERVAL</a></li><li><a href="global.html#TOPVISITS_MAX_DOMAINS">TOPVISITS_MAX_DOMAINS</a></li><li><a href="global.html#WORDCLOUD_MAX_DOMAINS">WORDCLOUD_MAX_DOMAINS</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu Apr 27 2017 15:41:23 GMT-0600 (Mountain Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
