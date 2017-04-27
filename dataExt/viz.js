@@ -12,5 +12,7 @@ window.onload = function(){
         chrome.tabs.create({url:chrome.extension.getURL("viz4.html")});});
     document.getElementById("viz5").addEventListener("click", function(){
         chrome.tabs.create({url:chrome.extension.getURL("streamgraph.html")});});
+    document.getElementById("viz6").addEventListener("click", function(){
+        chrome.tabs.create({url:chrome.extension.getURL("heatmap.html")});});
 };
 

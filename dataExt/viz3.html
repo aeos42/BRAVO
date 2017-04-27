@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
+    .dots path {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .axis--y line {
+        stroke-opacity: 0.2;
+    }
+
+    .axis--y path {
+        stroke: none;
+    }
+
+    .axis text {
+        font: 14px Verdana, monospace;
+    }
      body {
         font-size: 14px;
         font-family: Verdana, monospace;

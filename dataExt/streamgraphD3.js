@@ -1,23 +1,41 @@
-// D3 code is adapted from http://bl.ocks.org/WillTurman/4631136
-
-/* Overall strategy
+/**
+ * @author Julia Heil
+ * @fileOverview Display streamgraph charts for user's chrome history - daily visits or daily dwelltime - by domain.
+ * <pre>
+ *        Uses a chrome history API to retrieve data
+ *        Data is gathered by {@link streamgraphData.js} at extension load, and
+ *            then incrementally when this page loads/
+ *        Displays either 'visits' or 'dwelltime' (time initial visit time to url and start of next url visit)
+ *        Data is displayed based on {@link STREAMGRAPH_NUMDAYS} up to entirety of chrome history
+ *        Data for {@link STREAMGRAPH_MAX_DOMAINS} is pulled into D3 chart.  User can use slider to change this.
+ *        Dwelltime data is 'capped' at {@link MAX_DWELL_HOURS} hours
+ *
+ * Overall strategy
  *  1. Send message to the listener on background page to send query data
- * 	2. Display the scatterplot visualization using D3
- *  3. If slider is moved, then zero out data for last n datasets
+ *  2. Display the streamgraph visualization using D3
+ *  3. If slider is moved, then zero out data for last n datasets and show selected number of domains
  *  4. If 'visit' or 'dwell' button is pressed, then do a data refresh
+ *  5. Vertical bar can isolate a specific 'domain stream' and show via tooltip the data for that domain
+ *
+ * Graph visual:
+ * </pre>
+ * <img src="./streamgraph.png">
+ * <pre>
+ * See {@link streamgraphDwell} and {@link streamgraphVisits} for data format
+ * </pre>
+ * @see adapted from Will Turman's Block {@link http://bl.ocks.org/WillTurman/4631136}
  */
-
 var w = 900;
-var h = 500;
+var h = 450;
 
 var datearray = [];
 var colorrange = [];
-var currentStreamgraph = "Visits";  //'visits' or 'hours' are valid types
+var currentStreamgraph = "Visits";  //'Visits' or 'Hours' are valid types
 var color;
+
 //  1. Send message to the listener on background page to send query data
 chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, function (response) {
     const STARTING_DOMAINS = 36;
-    const STARTING_TITLE = "Visits"
     var data, rawData, numDays, maxDomains;
     var sgtitle = {
         title: currentStreamgraph,
@@ -202,6 +220,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, func
         })
 
         .on("mousemove", function (d) {
+            vertical.style("opacity", 1);
             var mousex;
             mousex = d3.mouse(this);
             mousex = mousex[0];
@@ -225,6 +244,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, func
 
         })
         .on("mouseout", function () {
+            vertical.style("opacity", 1e-6);
             svg.selectAll(".layer")
                 .transition()
                 .duration(250)
@@ -262,6 +282,7 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, func
             vertical.style("left", mousex + "px");
         });
 
+
     // add buttons
     d3.select(".chart")
         .append("button")
@@ -296,7 +317,6 @@ chrome.runtime.sendMessage({greeting: "viz5D3", graph: currentStreamgraph}, func
         //request the new data
         chrome.runtime.sendMessage({greeting: "viz5D3", graph: charttype}, function (response) {
             rawData = response.pq;
-            slider.update(numdomains);
             data = zeroOut(rawData, numdomains);
             data.forEach(function (d) {
                 d.date = format.parse(d.date);
