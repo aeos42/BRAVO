@@ -247,12 +247,12 @@ function getActiveTrace() {
     var pq2 = alasql("SELECT domain as urlName, visitStartTime AS [start], visitEndTime AS [end] FROM ? " +
         "JOIN ? AS pq6 USING domain " +
         "WHERE ((dwellTime > " + ACTIVE_TRACE_MIN_WINDOW + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-        "ORDER BY start ASC LIMIT " + ACTIVETRACE_MAX_DATA_ITEMS.toString(), [chromedata, pq6]);
+                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DOMAINS.toString(), [chromedata, pq6]);
 
     var pq3 = alasql("SELECT domain as urlName, visitStartTimeStamp AS [start], visitEndTimeStamp AS [end] FROM ? " +
         "JOIN ? AS pq6 USING domain " +
         "WHERE ((dwellTime > " + ACTIVE_TRACE_MIN_WINDOW + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-        "ORDER BY start ASC LIMIT " + ACTIVETRACE_MAX_DATA_ITEMS.toString(), [chromedata, pq6]);
+                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DOMAINS.toString(), [chromedata, pq6]);
     //consoleQueryStats(pq2, chromedata, "alaSQL HH:MM - Active Trace data by domain, start and end");
     //consoleQueryStats(pq3, chromedata, "alaSQL XX/XX/XX HH:MM - Active Trace data by domain, start and end");
     this.hourdata = pq2;
@@ -840,6 +840,3 @@ testQuery.pq = [
     {key: "moodle.cs.colorado", value: 0.22, date: "01/27/13"},
     {key: "moodle.cs.colorado", value: 0.1, date: "01/28/13"}
 ];
-
-
-
