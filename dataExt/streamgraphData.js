@@ -121,6 +121,8 @@ const ACTIVE_TRACE_MAX_DOMAINS = 100;
  */
 const ACTIVE_TRACE_MIN_WINDOW = 0.017;
 
+const ACTIVE_TRACE_MAX_DATA_ITEMS = 100000;
+
 //============================================================
 /**
  * @typedef {Object} streamgraphDwell
@@ -148,22 +150,22 @@ function getStreamgraphDwell() {
     var streamgraphDwell = {pq: [], numdays: STREAMGRAPH_NUMDAYS, maxDomains: STREAMGRAPH_MAX_DOMAINS};
     console.time("alaSQL streamgraph dwell query");
     var pq6 = alasql("SELECT domain, SUM(dwellTime) AS [value], ROWNUM() AS rank FROM ? " +
-        //   "WHERE (LENGTH(shortDomain) <= 30) " +
-        "GROUP BY domain ORDER BY [value] DESC LIMIT " + STREAMGRAPH_MAX_DOMAINS.toString(), [chromedata]);
+                     //   "WHERE (LENGTH(shortDomain) <= 30) " +
+                     "GROUP BY domain ORDER BY [value] DESC LIMIT " + STREAMGRAPH_MAX_DOMAINS.toString(), [chromedata]);
 
     var pq4 = alasql("SELECT t1.domain as [key], t1.rank, SUM(t2.dwellTime) AS [value], t2.dateStamp AS date " +
-        " FROM ? AS t1 JOIN ? AS t2 USING domain " +
-        " GROUP by domain, rank, t2.dateStamp", [pq6, chromedata]);
+                     " FROM ? AS t1 JOIN ? AS t2 USING domain " +
+                     " GROUP by domain, rank, t2.dateStamp", [pq6, chromedata]);
 
     //consoleQueryStats(pq4, chromedata, "Dwell Time BY Top N domains, date");
     //make sure we have a value for every date
     for (var i = 0, len = pq6.length; i < len; i++) {
         fillGaps(pq4, Math.max(streamgraphSearchStartTime, chromedata.startTime()),
-            chromedata.endTime(), pq6[i].domain, pq6[i].rank);
+                 chromedata.endTime(), pq6[i].domain, pq6[i].rank);
     }
     //consoleQueryStats(pq4, chromedata, "Dwell time BY Top N domain - Gap Filled, date");
     streamgraphDwell.pq = alasql("SELECT rank, [key], date, SUM([value]) AS [value] FROM ? " +
-        "GROUP BY rank, [key], date ORDER BY rank, date", [pq4]);
+                                 "GROUP BY rank, [key], date ORDER BY rank, date", [pq4]);
     //consoleQueryStats(streamgraphDwell.pq, chromedata, "alaSQL Dwell Query");
     console.timeEnd("alaSQL streamgraph dwell query");
     return streamgraphDwell;
@@ -247,12 +249,12 @@ function getActiveTrace() {
     var pq2 = alasql("SELECT domain as urlName, visitStartTime AS [start], visitEndTime AS [end] FROM ? " +
         "JOIN ? AS pq6 USING domain " +
         "WHERE ((dwellTime > " + ACTIVE_TRACE_MIN_WINDOW + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DOMAINS.toString(), [chromedata, pq6]);
+                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DATA_ITEMS.toString(), [chromedata, pq6]);
 
     var pq3 = alasql("SELECT domain as urlName, visitStartTimeStamp AS [start], visitEndTimeStamp AS [end] FROM ? " +
         "JOIN ? AS pq6 USING domain " +
         "WHERE ((dwellTime > " + ACTIVE_TRACE_MIN_WINDOW + " ) AND (visitTime >  " + queryStartTimeActiveTrace + ")) " +
-                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DOMAINS.toString(), [chromedata, pq6]);
+                     "ORDER BY start ASC LIMIT " + ACTIVE_TRACE_MAX_DATA_ITEMS.toString(), [chromedata, pq6]);
     //consoleQueryStats(pq2, chromedata, "alaSQL HH:MM - Active Trace data by domain, start and end");
     //consoleQueryStats(pq3, chromedata, "alaSQL XX/XX/XX HH:MM - Active Trace data by domain, start and end");
     this.hourdata = pq2;

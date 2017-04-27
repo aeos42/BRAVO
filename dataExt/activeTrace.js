@@ -101,6 +101,22 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("x", -50)
         .attr("y", function(d) {return yScale(d.lane) + (rectHeight);});
 
+    svg.selectAll("line.horizontalGrid").data(yScale.ticks(8)).enter()
+        .append("line")
+        .attr(
+            {
+                "class":"horizontalGrid",
+                "x1" : margins.right,
+                "x2" : width,
+                "y1" : function(d){ return yScale(d);},
+                "y2" : function(d){ return yScale(d);},
+                "fill" : "none",
+                "shape-rendering" : "crispEdges",
+                "stroke" : "black",
+                "stroke-width" : "1px",
+                "opacity" : "0.5"
+            });
+
 
 
 });
@@ -108,6 +124,9 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
 
 //time parser
+
+
+
 
 function toTime(timeString)
 {
