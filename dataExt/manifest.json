@@ -6,7 +6,9 @@
   "name": "Browser Analytics Visualization",  //install, extension manager, Chrome web store
   "description": "BRAVO",   //12 chars max - app launcher, new tab page
   "version": "1.0.1",
-  "version_name": "1.0 beta",
+  "version_name": "1.0",
+  "description": "Gain insight to your browsing habits",
+  "icons": {"19" : "icon-19.png", "48" : "icon-48.png", "128": "icon-128.png"},
   
   "browser_action": {
     "default_popup": "popup.html",
