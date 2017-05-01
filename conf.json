@@ -1,0 +1,30 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "source": {
+        "include": [ "dataExt/streamgraphData.js", "dataExt/streamgraphD3.js", 
+                     "dataExt/topVisitsD3.js", "dataExt/heatmapD3.js", "dataExt/timeofdayD3.js",
+                     "dataExt/wordcloudD3.js", "dataExt/activeTrace.js",  "dataExt/listen.js", "dataExt/piechart.js"],
+        "exclude": [ /* array of paths to exclude */ ],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [ ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "staticFiles": {
+                "include": [ "./static" ]
+            }
+        }
+    },
+    "opts": {
+        "template": "templates/default",  // same as -t templates/default
+        "encoding": "utf8",               // same as -e utf8
+        "destination": "./jsdoc/",       // same as -d ./out/
+        "recurse": true                  // same as -r
+    }
+}
