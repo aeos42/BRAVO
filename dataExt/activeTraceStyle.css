@@ -35,12 +35,12 @@ div {
 
 .dataRects {
 
-    fill: blue
+    fill: #4B86D4
 
 }
 
 .dataRects:hover {
-    stroke: black
+    fill: #192D47
 }
 
 .tooltip {

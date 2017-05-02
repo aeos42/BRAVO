@@ -3,9 +3,6 @@ var dataset;
 var datarects;
 
 
-var uniqueDoms = new Set();
-
-
 var testData = [{"lane": 1, "domainName": "www.github.com", "start": makeDate(8, 24), "end": makeDate(10, 10)},
                 {"lane": 1, "domainName": "www.github.com", "start": makeDate(10, 24), "end": makeDate(11, 54)},
                 {"lane": 2, "domainName": "www.google.com", "start": makeDate(11, 24), "end": makeDate(11, 59)},
@@ -30,7 +27,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         d.domainName = d.domainName;   // add domainName
     })
 
-    data = testData.slice();  //  <---- comment this line to go back to testData
+    //data = testData.slice();  //  <---- comment this line to go back to testData
 
     /* adam, i am passing THREE datasets - currently using the chrometimedata one
      * response.hourdata = HH:MM format (string)
@@ -48,7 +45,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     var width = 1080;
     var height = (numLanes*20);
 
-    var svg = d3.select("#activeTrace").append("svg")
+    var svg = d3.select("body").append("svg")
         .attr("class", "chart")
         .attr("width", width + margins.left + margins.right)
         .attr("height", height + margins.top + margins.bottom)
@@ -137,22 +134,22 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("stroke", "lightgray");
 
 
-
-    var div = d3.select("#activeTrace").append("div")
+    var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("display", "none");
 
 
 
-    function mouseMove()
+    function mouseOver()
     {
         div.style("display", "inline");
     }
 
 
-    function mouseOver()
+    function mouseMove(d)
     {
-        div.text("hello")
+
+        div.text(xScale(d3.event.clientX))
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY) + "px");
 
