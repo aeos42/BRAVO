@@ -113,7 +113,7 @@ const ACTIVE_TRACE_NUMDAYS = 1;
  * @const
  * @default
  */
-const ACTIVE_TRACE_MAX_DOMAINS = 35;
+const ACTIVE_TRACE_MAX_DOMAINS = 20;
 /**
  * <pre>
  * The smallest window of time that is returned in the ActiveTrace queries.
@@ -125,6 +125,7 @@ const ACTIVE_TRACE_MAX_DOMAINS = 35;
  * @default
  */
 const ACTIVE_TRACE_MIN_WINDOW = 0.00167;  //.0167 = 1 min
+const ACTIVE_TRACE_SINCE_MIDNITE = 1;  // set to 1 if only start data stream at midnight, 0 for last 24 hours
 //============================================================
 /**
  * @typedef {Object} streamgraphDwell
@@ -707,9 +708,10 @@ function msecSinceDay(days) {
     var t = new Date();
     //get whole days of msec for anything over 1 day long
     var n = (days - 1) * 24 * 60 * 60 * 1000;
+    var n1 = (days) * 24 * 60 * 60 * 1000;
     //drop t.getSeconds() for performance
     var m = ((t.getHours() * 60 * 60) + (t.getMinutes() * 60)) * 1000;
-    return t - (n + m);
+    return (ACTIVE_TRACE_SINCE_MIDNITE === 1 ? (t - (n + m)): (t-n1));
 }
 
 //extract domain from URL
