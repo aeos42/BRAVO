@@ -1,7 +1,7 @@
 //import data
 var dataset;
 var datarects;
-var uniqueDomsHash = {};
+
 
 var uniqueDoms = new Set();
 
@@ -10,27 +10,27 @@ var testData = [{"lane": 1, "domainName": "www.github.com", "start": makeDate(8,
                 {"lane": 1, "domainName": "www.github.com", "start": makeDate(10, 24), "end": makeDate(11, 54)},
                 {"lane": 2, "domainName": "www.google.com", "start": makeDate(11, 24), "end": makeDate(11, 59)},
                 {"lane": 4, "domainName": "www.facebook.com", "start": makeDate(4, 30), "end": makeDate(6, 50)},
-                {"lane": 5, "domainName": "www.facebook.com", "start": makeDate(1, 30), "end": makeDate(2, 50)},
+                {"lane": 5, "domainName": "www.facebook.com", "start": makeDate(0, 00), "end": makeDate(2, 50)},
                 {"lane": 3, "domainName": "www.facebook.com", "start": makeDate(3, 30), "end": makeDate(6, 50)},
                 {"lane": 6, "domainName": "www.facebook.com", "start": makeDate(3, 30), "end": makeDate(6, 50)}];
 
 console.log("testData:", testData);
 
-var numLanes = 0;       // running number of lanes processed
+var numLanes = 6;       // running number of lanes processed
 
 chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     console.log("StreamgraphData:", response);
 
     data = response.chrometimedata;
-    data.forEach(function(d) {   
+    data.forEach(function(d) {
         d.start = new Date(d.start);   // convert timestamp to date
         d.end = new Date(d.end);       // convert timestamp to date
         d.lane = d.lane;
         numLanes = Math.max(numLanes, d.lane);  // figure out lane count
         d.domainName = d.domainName;   // add domainName
     })
-    
-    // data = testData.slice();  //  <---- comment this line to go back to testData
+
+    data = testData.slice();  //  <---- comment this line to go back to testData
 
     /* adam, i am passing THREE datasets - currently using the chrometimedata one
      * response.hourdata = HH:MM format (string)
@@ -40,19 +40,21 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
     //main graphics variable declarations
 
-    var margins = {"top": 50, "bottom": 50, "left": 100, "right": 50};
+    var margins = {"top": 50, "bottom": 100, "left": 200, "right": 50};
 
     var rectHeight = 20;
 
 
-    var width = 960;
+    var width = 1080;
     var height = (numLanes*20);
 
     var svg = d3.select("#activeTrace").append("svg")
+        .attr("class", "chart")
         .attr("width", width + margins.left + margins.right)
         .attr("height", height + margins.top + margins.bottom)
         .append("g")
         .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+
 
 
 
@@ -85,7 +87,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
     var xAxisG = svg.append('g')
         .attr('class', 'axis')
-        .attr('transform', 'translate(50, ' + (height+30) + ')')
+        .attr('transform', 'translate(0, ' + (height+50) + ')')
         .call(xAxis);
 
     //rects that indicate time on website
@@ -97,33 +99,69 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("x", function(d) {return xScale(d.start);})
         .attr("y", function(d) {return yScale(d.lane);})
         .attr("width", function(d) {return xScale(d.end)-xScale(d.start);})
-        .attr("height", rectHeight);
+        .attr("height", rectHeight)
+        .on("mouseover", mouseOver)
+        .on("mousemove", mouseMove)
+        .on("mouseout", mouseOut);
 
     console.log(datarects);
-    //labels for rects
+
+    //labels for lanes
 
     svg.append("g").selectAll("labels")
         .data(data)
         .enter().append("text")
         .text(function(d) {return d.domainName;})
-        .attr("x", -50)
+        .attr("x", -150)
         .attr("y", function(d) {return yScale(d.lane) + (rectHeight);});
 
-    svg.selectAll("line.horizontalGrid").data(yScale.ticks(8)).enter()
-        .append("line")
-        .attr(
-            {
-                "class":"horizontalGrid",
-                "x1" : margins.right,
-                "x2" : width,
-                "y1" : function(d){ return yScale(d);},
-                "y2" : function(d){ return yScale(d);},
-                "fill" : "none",
-                "shape-rendering" : "crispEdges",
-                "stroke" : "black",
-                "stroke-width" : "1px",
-                "opacity" : "0.5"
-            });
+
+
+    svg.append("g").selectAll(".laneLines")
+        .data(data)
+        .enter().append("line")
+        .attr("x1", 0)
+        .attr("y1", function(d) {return yScale(d.lane);})
+        .attr("x2", width)
+        .attr("y2", function(d) {return yScale(d.lane);})
+        .attr("stroke", "lightgray");
+
+
+    svg.append("g").selectAll(".laneLines")
+        .data(data)
+        .enter().append("line")
+        .attr("x1", 0)
+        .attr("y1", function(d) {return yScale(d.lane)+rectHeight;})
+        .attr("x2", width)
+        .attr("y2", function(d) {return yScale(d.lane)+rectHeight;})
+        .attr("stroke", "lightgray");
+
+
+
+    var div = d3.select("#activeTrace").append("div")
+        .attr("class", "tooltip")
+        .style("display", "none");
+
+
+
+    function mouseMove()
+    {
+        div.style("display", "inline");
+    }
+
+
+    function mouseOver()
+    {
+        div.text("hello")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY) + "px");
+
+    }
+
+    function mouseOut()
+    {
+        div.style("display", "none");
+    }
 
 
 
@@ -131,10 +169,9 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
 
 
+
+
 //time parser
-
-
-
 
 function toTime(timeString)
 {
