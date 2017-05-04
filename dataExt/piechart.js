@@ -24,6 +24,29 @@ var radius = h / 2 - 50;
 // Create dummy dataset
 chrome.runtime.sendMessage({greeting: "pieChartData"}, function(response) {
     var dataset = response.objects;
+    dataset.sort(function(a, b){
+	return b.time - a.time;
+    });
+    var totalTime;
+    var topNineTime;
+    var otherTime;
+    var i;
+
+    totalTime = 0;
+    topNineTime = 0;
+
+    if (dataset.length > 9) {
+	    for (i = 0; i < dataset.length; i++) {
+	        totalTime += dataset[i].time;
+	    }   
+	    dataset = dataset.slice(0, 9);
+	
+	    for (i = 0; i < dataset.length; i++) {
+	        topNineTime += dataset[i].time;
+	    }
+	    otherTime = totalTime - topNineTime;
+	    dataset.push({"title":"Other","time":otherTime});
+    }
     
     // Choose a color scale to be used for the wedges
     var color = d3.scale.category20c();
