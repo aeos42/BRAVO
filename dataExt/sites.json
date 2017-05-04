@@ -1,8 +1,8 @@
 {
-    "name": "sites",
+    "name": "sites", "time":3000,
     "children": [
         {
-            "name": "netflix",
+            "name": "netflix", "time":1000,
             "children": [
                 {
                     "name": "romantic",
