@@ -23,15 +23,18 @@ ___
 
 Clone or download the repository. Once the file is unzipped, open Google Chrome. On the right-hand toolbar drop-down navigate to *More Tools > Extensions.*
 
-Check *‘Developer Mode’* in the upper right-hand corner.
+Check **‘Developer Mode’** in the upper right-hand corner.
 
-Click *‘Load unpacked extension’* and navigate to the folder named ‘dataExt’ in the BRAVO folder.
+Click **‘Load unpacked extension’** and navigate to the folder named ‘dataExt’ in the BRAVO folder.
 
-Press *‘OK’* with the folder highlighted.
+Press **‘OK’** with the folder highlighted.
 
 The extension should now be installed--click the small icon that appeared in the upper-right hand corner of the browser to start using BRAVO!
+___
+### Documentation
 
-
+Documentation is managed by JSDoc, and is available in the **jsdoc** directory.
+___
 ### Motivation
 * In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
 * Much like Mint produces useful metrics and graphics for a person’s money usage, we hope that BRAVO will provide useful metrics and graphics that will help users gain insights into their internet usage and time. 
