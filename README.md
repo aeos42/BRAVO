@@ -30,10 +30,7 @@ Click **‘Load unpacked extension’** and navigate to the folder named ‘data
 Press **‘OK’** with the folder highlighted.
 
 The extension should now be installed--click the small icon that appeared in the upper-right hand corner of the browser to start using BRAVO!
-___
-### Documentation
 
-Documentation is managed by JSDoc, and is available in the **jsdoc** directory.
 ___
 ### Motivation
 * In today’s environment, we spend a lot of time on the internet--whether it involves work or play. We want people to better understand how they use one of their most precious resources--their time. 
@@ -92,3 +89,8 @@ ___
 ____
 ### Project Plan
 ![Imgur](http://i.imgur.com/Sxa1cJo.png)
+
+___
+### Documentation
+
+Documentation is managed by JSDoc, and is available in the **jsdoc** directory.
