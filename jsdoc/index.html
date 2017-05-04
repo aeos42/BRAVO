@@ -54,6 +54,106 @@
 
 <header>
     
+        <h2>activeTrace.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Displays dwell time on websites over a 24-hour period. Uses typical D3 strategies, data
+comes from streamgraphData.js. Credit to bill bunkat's timeline d3.js code available on bl.ocks for
+structural inspiration.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Adam Siefkas</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="activeTrace.js.html">activeTrace.js</a>, <a href="activeTrace.js.html#line4">line 4</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
         <h2>heatmapD3.js</h2>
         
     
@@ -578,121 +678,16 @@
 
 
 
-
-
-
-<section>
-
-<header>
-    
-        <h2>wordcloudD3.js</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Display wordCloud of domains based on frequency of visits<pre>       Uses a chrome history API to retrieve data       Data is gathered by <a href="streamgraphData.js.html">streamgraphData.js</a> at extension load, and           then incrementally when this page loads/       Data is based on vists during the last <a href="global.html#STREAMGRAPH_NUMDAYS">STREAMGRAPH_NUMDAYS</a> days       If set to 0, then data for entire chrome history file will be displayed.       Data for <a href="global.html#WORDCLOUD_MAX_DOMAINS">WORDCLOUD_MAX_DOMAINS</a> is pulled into D3 chart.Overall strategy 1. Send message to the listener on background page to send query data 2. Display a wordcloud based on the top domains visited during the selected period 3. Scale the fontsize based on word frequencyGraph visual:</pre><img src="./wordCloud.png"><pre>See <a href="global.html#wordCloud">wordCloud</a>  for data format</pre></div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Julia Heil</li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="wordcloudD3.js.html">wordcloudD3.js</a>, <a href="wordcloudD3.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>adapted from Coopeys Block <a href="http://bl.ocks.org/ericcoopey/6382449">http://bl.ocks.org/ericcoopey/6382449</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ACTIVE_TRACE_MAX_DOMAINS">ACTIVE_TRACE_MAX_DOMAINS</a></li><li><a href="global.html#ACTIVE_TRACE_MIN_WINDOW">ACTIVE_TRACE_MIN_WINDOW</a></li><li><a href="global.html#ACTIVE_TRACE_NUMDAYS">ACTIVE_TRACE_NUMDAYS</a></li><li><a href="global.html#CHROME_MAX_DATA_ITEMS">CHROME_MAX_DATA_ITEMS</a></li><li><a href="global.html#getActiveTrace()">getActiveTrace()</a></li><li><a href="global.html#getStreamgraphDwell()">getStreamgraphDwell()</a></li><li><a href="global.html#getStreamgraphVisits()">getStreamgraphVisits()</a></li><li><a href="global.html#getTod()">getTod()</a></li><li><a href="global.html#getTopVisits()">getTopVisits()</a></li><li><a href="global.html#getWordCloud()">getWordCloud()</a></li><li><a href="global.html#MAX_DWELL_HOURS">MAX_DWELL_HOURS</a></li><li><a href="global.html#STREAMGRAPH_MAX_DOMAINS">STREAMGRAPH_MAX_DOMAINS</a></li><li><a href="global.html#STREAMGRAPH_NUMDAYS">STREAMGRAPH_NUMDAYS</a></li><li><a href="global.html#TOD_TIMEINTERVAL">TOD_TIMEINTERVAL</a></li><li><a href="global.html#TOPVISITS_MAX_DOMAINS">TOPVISITS_MAX_DOMAINS</a></li><li><a href="global.html#WORDCLOUD_MAX_DOMAINS">WORDCLOUD_MAX_DOMAINS</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ACTIVE_TRACE_MAX_DOMAINS">ACTIVE_TRACE_MAX_DOMAINS</a></li><li><a href="global.html#ACTIVE_TRACE_MIN_WINDOW">ACTIVE_TRACE_MIN_WINDOW</a></li><li><a href="global.html#ACTIVE_TRACE_NUMDAYS">ACTIVE_TRACE_NUMDAYS</a></li><li><a href="global.html#CHROME_MAX_DATA_ITEMS">CHROME_MAX_DATA_ITEMS</a></li><li><a href="global.html#getActiveTrace()">getActiveTrace()</a></li><li><a href="global.html#getStreamgraphDwell()">getStreamgraphDwell()</a></li><li><a href="global.html#getStreamgraphVisits()">getStreamgraphVisits()</a></li><li><a href="global.html#getTod()">getTod()</a></li><li><a href="global.html#getTopVisits()">getTopVisits()</a></li><li><a href="global.html#getWordCloud()">getWordCloud()</a></li><li><a href="global.html#makeDate">makeDate</a></li><li><a href="global.html#MAX_DWELL_HOURS">MAX_DWELL_HOURS</a></li><li><a href="global.html#STREAMGRAPH_MAX_DOMAINS">STREAMGRAPH_MAX_DOMAINS</a></li><li><a href="global.html#STREAMGRAPH_NUMDAYS">STREAMGRAPH_NUMDAYS</a></li><li><a href="global.html#testData">testData</a></li><li><a href="global.html#TOD_TIMEINTERVAL">TOD_TIMEINTERVAL</a></li><li><a href="global.html#TOPVISITS_MAX_DOMAINS">TOPVISITS_MAX_DOMAINS</a></li><li><a href="global.html#toTime">toTime</a></li><li><a href="global.html#WORDCLOUD_MAX_DOMAINS">WORDCLOUD_MAX_DOMAINS</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Sat Apr 29 2017 07:28:08 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Thu May 04 2017 11:52:04 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>
