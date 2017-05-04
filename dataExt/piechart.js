@@ -1,3 +1,21 @@
+/**
+ * @author Matilda Whitemore
+ * @file Display website history in terms of time spent on site in a piechart format.
+ * <pre>
+ *        Uses a chrome history API to retrieve data
+ *        Data is gathered by {@link listen.js} at extension load. The sites are then organized into ten slices
+ *        where the 10th category is defined as an "other" section.
+ *
+ * Overall strategy
+ *  1. Send message to the listener on background page to send query data
+ *  2. Display the piechart visualization using D3 based on the data parsed
+ *  3. Only displays ten slices so the it does not become overcrowded
+ *
+ * Graph visual:
+ * </pre>
+ * <img src="./piechart.png">
+ * @see adapted from {@link https://bl.ocks.org/mbostock/3887235}
+ */
 // Initialize dimensions for the chart
 var h = 600;
 var w = 960;
