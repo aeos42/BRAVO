@@ -31,7 +31,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     var xMin = d3.min(data, function(d) {return Math.min(d.start); });   //Set Min Time
     var xMax = d3.max(data, function(d) {return Math.max(d.end); });     //Set Max Time
 
-    data = testData.slice();  //  <---- comment this line to go back to testData
+    //data = testData.slice();  //  <---- comment this line to go back to testData
 
     //main graphics variable declarations
 
