@@ -1,6 +1,7 @@
-//import data
 var dataset;
 var datarects;
+
+//test data in the absense of real data
 
 
 var testData = [{"lane": 1, "domainName": "www.github.com", "start": makeDate(8, 24), "end": makeDate(10, 10)},
@@ -11,9 +12,9 @@ var testData = [{"lane": 1, "domainName": "www.github.com", "start": makeDate(8,
                 {"lane": 3, "domainName": "www.facebook.com", "start": makeDate(3, 30), "end": makeDate(6, 50)},
                 {"lane": 6, "domainName": "www.facebook.com", "start": makeDate(3, 30), "end": makeDate(6, 50)}];
 
-console.log("testData:", testData);
 
-var numLanes = 6;       // running number of lanes processed
+
+var numLanes = 6;       // running number of lanes processed, only for test data
 
 chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     console.log("StreamgraphData:", response);
@@ -30,24 +31,21 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     var xMin = d3.min(data, function(d) {return Math.min(d.start); });   //Set Min Time
     var xMax = d3.max(data, function(d) {return Math.max(d.end); });     //Set Max Time
 
-    //data = testData.slice();  //  <---- comment this line to go back to testData
-
-    /* adam, i am passing THREE datasets - currently using the chrometimedata one
-     * response.hourdata = HH:MM format (string)
-     * response.timestampdata = DD/MM/YY HH:MM format (string)
-     * response.chrometimedata = native timestamp (number - milliseconds time format)
-     */
+    data = testData.slice();  //  <---- comment this line to go back to testData
 
     //main graphics variable declarations
 
     var margins = {"top": 50, "bottom": 100, "left": 200, "right": 50};
 
+    //height of data rects
     var rectHeight = 20;
 
 
-    var width = 900;  //1080
+    //main dimensions
+    var width = 900;
     var height = (numLanes*20);
 
+    //main graph gets added to page
     var svg = d3.select("body").append("svg")
         .attr("class", "chart")
         .attr("width", width + margins.left + margins.right)
@@ -58,9 +56,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
 
 
-    //-----scales
-
-    //x
+    //scale definitons--creates a function from data->page
     var begDay = new Date();
     begDay.setHours(0,0,0,0);
 
@@ -69,8 +65,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
 
     var xScale = d3.time.scale()
-     //   .domain([begDay, endDay])
-        .domain([xMin,xMax])   //Figure our x-axis from the data
+        .domain([begDay, endDay])
         .range([0,width]);
 
     var yScale = d3.scale.linear()
@@ -78,21 +73,23 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .range([0,height]);
 
 
-    //-----axes
 
-    //x
+
+    //define d3 x-axis objet
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient("bottom")
         .ticks(10);
 
+
+    //graphics appending of x-axis objet
     var xAxisG = svg.append('g')
         .attr('class', 'axis')
         .attr('transform', 'translate(0, ' + (height+50) + ')')
         .call(xAxis);
 
-    //rects that indicate time on website
 
+    //rects that indicate time on website
     var datarects = svg.append("g").selectAll("rect")
         .data(data)
         .enter().append("rect")
@@ -105,10 +102,8 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .on("mousemove", mouseMove)
         .on("mouseout", mouseOut);
 
-    console.log(datarects);
 
     //labels for lanes
-
     svg.append("g").selectAll("labels")
         .data(data)
         .enter().append("text")
@@ -117,7 +112,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("y", function(d) {return yScale(d.lane) + (rectHeight);});
 
 
-
+    //lines that separate lanes
     svg.append("g").selectAll(".laneLines")
         .data(data)
         .enter().append("line")
@@ -127,7 +122,7 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("y2", function(d) {return yScale(d.lane);})
         .attr("stroke", "lightgray");
 
-
+    //a second set of lines to draw on the other side of each lane
     svg.append("g").selectAll(".laneLines")
         .data(data)
         .enter().append("line")
@@ -137,13 +132,13 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
         .attr("y2", function(d) {return yScale(d.lane)+rectHeight;})
         .attr("stroke", "lightgray");
 
-
+    //tooltip declaration
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("display", "none");
 
 
-
+    //functions for tooltip, defines behavior
     function mouseOver()
     {
         div.style("display", "inline");
@@ -153,7 +148,6 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
     function mouseMove(d)
     {
 
-        //div.text(xScale(d3.event.clientX))
         div.html( d.domainName + "<br>" + Math.round(d.dwell) + " minutes" )   // just display minutes
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY) + "px");
@@ -168,10 +162,6 @@ chrome.runtime.sendMessage({greeting: "activeTraceData"}, function(response) {
 
 
 });
-
-
-
-
 
 //time parser
 
@@ -196,6 +186,7 @@ function toTime(timeString)
 }
 
 
+//makedate function for test data
 
 function makeDate(hours, minutes)
 {
@@ -206,52 +197,3 @@ function makeDate(hours, minutes)
 
     return time;
 }
-
-
-/*
-//y
-var yAxis = d3.svg.axis()
-.scale(yScale)
-.orient("left")
-
-
-var yAxisG = svg.append('g')
-.attr('class', 'axis')
-.attr('transform', 'translate(' + xOffset + ', 0)')
-.call(yAxis);
-
-
-//additional data processing
-//a set will identify unique URLS
-for (var i = 0; i < dataset.length; i++)
-{
-uniqueDoms.add(dataset[i].urlName);
-}
-
-//then hash the set to integrate into dataset
-
-i = 1;
-for (let item of uniqueDoms)
-{
-uniqueDomsHash[item] = i;
-i++;
-}
-
-//then iterate through dataset to set lanes to unique urls
-//also format times into date objects
-for (var i = 0; i < dataset.length; i++)
-{
-dataset[i].lane = uniqueDomsHash[dataset[i].urlName];
-
-if (dataset[i].start)
-{
-dataset[i].start = toTime(dataset[i].start);
-dataset[i].end = toTime(dataset[i].end);
-}
-
-}
-
-console.log(dataset);
-
-
-*/
